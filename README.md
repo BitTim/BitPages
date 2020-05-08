@@ -2,7 +2,13 @@
 ## A presentation engine, that creates a PDF from a markdown styled input file
 
 ### Installation
-Installation is straight forward, just download the package you need from the releases and either extract the folder or run the installer if you are on windows
+Installation is straight forward, just download the package you need from the releases and either extract the folder or run the installer if you are on Windows.
+
+**Important!** Make sure to have a folder called ".cache" in the installation folder. If not, the program will crash. You can check by using following commands in the terminal:
+```
+cd path/to/bitPresent/installation
+ls -a
+```
 
 ### Usage:
 See the documentation in the docs folder here or just follow this link:
