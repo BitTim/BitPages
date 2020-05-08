@@ -7,7 +7,7 @@
 
 void errorHandler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
 {
-  printf("[ERROR]: Error with pdf: %d\n", error_no);
+  printf("[ERROR]: Error with pdf: %04x, details: %s\n", error_no, strerror(detail_no));
 }
 
 int createPDF()

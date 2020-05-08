@@ -50,6 +50,19 @@ SDL_Surface* generateSurface(int slide)
         SDL_FreeSurface(text);
       }
     }
+
+    //Render "Created with BitPresent"
+    if(slide == Global::_PRESENT->slides.size() - 1)
+    {
+      text = TTF_RenderUTF8_Blended(Global::_FONT["footer"], "Created with BitPresent", *Global::_TEXTCOLOR);
+      if(text == NULL) printf("[ERROR]: Rendering Footer: %s\n", TTF_GetError());
+      else
+      {
+        dst = {Global::_WIDTH - Global::_BORDERS - text->w, Global::_HEIGHT - Global::_BORDERS - text->h, text->w, text->h};
+        SDL_BlitScaled(text, NULL, surface, &dst);
+        SDL_FreeSurface(text);
+      }
+    }
   }
   else
   {
