@@ -54,7 +54,7 @@ void parse(std::vector<std::string> tokens)
 		{
 			i += 1;
 			if(tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING]: Using instruction(\"%s\") as argument for '.background'\n", tokens[i].c_str());
-			Global::_PRESENT->background = tokens[i];
+			Global::_BACKGROUND = tokens[i];
 			continue;
 		}
 		
@@ -71,8 +71,8 @@ void parse(std::vector<std::string> tokens)
 		{
 			i += 1;
 			if(tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING]: Using instruction(\"%s\") as argument for '.image'\n", tokens[i].c_str());
-			Global::_FONT = TTF_OpenFont(tokens[i].c_str(), 16);
-			if(Global::_FONT == NULL)
+			Global::_FONT = {{"title", TTF_OpenFont(tokens[i].c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].c_str(), 34)}};
+			if(Global::_FONT["title"] == NULL || Global::_FONT["subtitle"] == NULL || Global::_FONT["normal"] == NULL)
 			{
 				printf("[ERROR]: Error loading font. Reverting to default\n");
 				Global::_FONT = Global::_DEFAULTFONT;
@@ -102,7 +102,6 @@ void parse(std::vector<std::string> tokens)
 
 			Global::_PRESENT->slides[Global::_CSLIDE].titleSlide = true;
 			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
-			printf("[DEBUG]: Title: %s\n", tokens[i].substr(1, tokens[i].length() - 2).c_str());
 			continue;
 		}
 
