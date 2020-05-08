@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Cached files
+.cache
+
+# Binaries
+bin

@@ -1,0 +1,11 @@
+.background /home/tim/Coding/Sample Files/sampleImage.png
+
+<Topic 1 (Title Slide)>
+-Subtitle-
+
+[Slide 1]
+-Subtitle-
+Point 1
+Point 2
+Point 3
+.image none
