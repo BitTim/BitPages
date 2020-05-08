@@ -29,50 +29,50 @@ SDL_Surface* generateSurface(int slide)
   if(Global::_PRESENT->slides[slide].titleSlide)
   {
     //Title
-    SDL_FreeSurface(text);
     text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
     if(text == NULL) printf("[ERROR]: Rendering Title: %s\n", TTF_GetError());
     else
     {
       dst = {Global::_WIDTH / 2 - text->w / 2, Global::_HEIGHT / 2 - text->h, text->w, text->h};
       SDL_BlitScaled(text, NULL, surface, &dst);
+      SDL_FreeSurface(text);
     }
 
     //Subtitle
     if(Global::_PRESENT->slides[slide].subtitle.length() > 0)
     {
-      SDL_FreeSurface(text);
       text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
       if(text == NULL) printf("[ERROR]: Rendering Subtitle: %s\n", TTF_GetError());
       else
       {
         dst = {Global::_WIDTH / 2 - text->w / 2, Global::_HEIGHT / 2 + text->h, text->w, text->h};
         SDL_BlitScaled(text, NULL, surface, &dst);
+        SDL_FreeSurface(text);
       }
     }
   }
   else
   {
     //Title
-    SDL_FreeSurface(text);
     text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
     if(text == NULL) printf("[ERROR]: Rendering Title: %s\n", TTF_GetError());
     else
     {
       dst = {Global::_BORDERS, Global::_BORDERS, text->w, text->h};
       SDL_BlitScaled(text, NULL, surface, &dst);
+      SDL_FreeSurface(text);
     }
 
     //Subtitle
     if(Global::_PRESENT->slides[slide].subtitle.length() > 0)
     {
-      SDL_FreeSurface(text);
       text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
       if(text == NULL) printf("[ERROR]: Rendering Subtitle: %s\n", TTF_GetError());
       else
       {
         dst = {Global::_BORDERS, dst.y + dst.h, text->w, text->h};
         SDL_BlitScaled(text, NULL, surface, &dst);
+        SDL_FreeSurface(text);
       }
     }
 
@@ -82,7 +82,6 @@ SDL_Surface* generateSurface(int slide)
 
     if(Global::_PRESENT->slides[slide].image != "none")
     {
-      SDL_FreeSurface(image);
       image = IMG_Load(Global::_PRESENT->slides[slide].image.c_str());
       if(image == NULL) printf("[ERROR]: Rendering Image: %s\n", SDL_GetError());
       else 
@@ -94,6 +93,7 @@ SDL_Surface* generateSurface(int slide)
         imgPosX = dst.x;
 
         SDL_BlitScaled(image, NULL, surface, &dst);
+        SDL_FreeSurface(image);
       }
     }
 
@@ -101,18 +101,16 @@ SDL_Surface* generateSurface(int slide)
     for(int i = 0; i < Global::_PRESENT->slides[slide].points.size(); i++)
     {
       //Render Dashes
-      SDL_FreeSurface(text);
       text = TTF_RenderUTF8_Blended(Global::_FONT["normal"], "- ", *Global::_TEXTCOLOR);
       if(text == NULL) printf("[ERROR]: Rendering Prefix: %s\n", TTF_GetError());
       else
       {
         dst = {Global::_BORDERS, contentHeight, text->w, text->h};
         SDL_BlitScaled(text, NULL, surface, &dst);
+        SDL_FreeSurface(text);
       }
 
       //Render Text
-      SDL_FreeSurface(text);
-      printf("[DEBUG]: Slide %d: %s\n", slide, Global::_PRESENT->slides[slide].points[i].c_str());
       text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["normal"], Global::_PRESENT->slides[slide].points[i].c_str(), *Global::_TEXTCOLOR, imgPosX - 2 * Global::_BORDERS - dst.x);
       if(text == NULL) printf("[ERROR]: Rendering Points: %s\n", TTF_GetError());
       else
@@ -120,6 +118,7 @@ SDL_Surface* generateSurface(int slide)
         dst = {Global::_BORDERS + dst.w, contentHeight, text->w, text->h};
         contentHeight += text->h;
         SDL_BlitScaled(text, NULL, surface, &dst);
+        SDL_FreeSurface(text);
       }
     }
   }

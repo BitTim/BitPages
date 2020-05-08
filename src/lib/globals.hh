@@ -11,6 +11,8 @@ struct Global
   static int _HEIGHT;
   static int _BORDERS;
 
+  static std::string _OUTPATH;
+
   static Presentation* _PRESENT;
   static int _CSLIDE;
 

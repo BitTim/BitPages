@@ -3,11 +3,14 @@
 #include "lib/globals.hh"
 #include "lib/fileParser.hh"
 #include "lib/imageGenerator.hh"
+#include "lib/pdfCreator.hh"
 
 //Initialize all global variables
 int Global::_WIDTH = 1280;
 int Global::_HEIGHT = 720;
 int Global::_BORDERS = 20;
+
+std::string Global::_OUTPATH = "";
 
 Presentation* Global::_PRESENT = nullptr;
 int Global::_CSLIDE = -1;
@@ -22,11 +25,14 @@ std::string Global::_DEFAULTBACKGROUND = "";
 int main(int argc, char* argv[])
 {
 	//Check Argument length
-	if (argc != 2)
+	if (argc < 2 || argc > 3)
 	{
-		printf("[USAGE]: bitPresent <path>\n");
+		printf("[USAGE]: bitPresent <input_path> [<output_path>]\n");
 		return 0;
 	}
+
+	if(argc == 3) Global::_OUTPATH = argv[2];
+	else Global::_OUTPATH = "presentation.pdf";
 
 	//Initialize SDL for future Ops
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -68,8 +74,13 @@ int main(int argc, char* argv[])
 
 	printf("[OK]: Created all Images\n");
 
-	//Create new PDF Document
-	
+	//Create PDF
+	createPDF();
+
+	//Clear Fonts
+	TTF_CloseFont(Global::_FONT["title"]);
+	TTF_CloseFont(Global::_FONT["subtitle"]);
+	TTF_CloseFont(Global::_FONT["normal"]);
 
 	//Exit SDL
 	IMG_Quit();
