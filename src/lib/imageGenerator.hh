@@ -14,14 +14,18 @@ SDL_Surface* generateSurface(int slide)
   SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 255, 255, 255));
   if(Global::_PRESENT->background != "none" && Global::_PRESENT->background != "default")
   {
-    //SDL_Surface* image = IMG_Load(Global::_PRESENT->background.c_str());
-    SDL_Surface* image = IMG_Load("/home/tim/Coding/Sample Files/sampleImage.png");
-    printf("[DEBUG]: Background path: %s\n", Global::_PRESENT->background.c_str());
+    SDL_Surface* image = IMG_Load(Global::_PRESENT->background.c_str());
     if(image == NULL) printf("[ERROR]: %s\n", SDL_GetError());
-    else SDL_BlitSurface(image, NULL, surface, NULL);
+    else SDL_BlitScaled(image, NULL, surface, NULL);
   }
 
+  SDL_Surface* text = nullptr;
+  SDL_Rect dst;
 
+  text = TTF_RenderText_Blended(Global::_FONT, Global::_PRESENT->slides[slide].title.c_str(), *Global::_TEXTCOLOR);
+  dst = {Global::_BORDERS, Global::_BORDERS, text->w, text->h};
+  if(text == NULL) printf("[ERROR]: %s\n", SDL_GetError());
+  else SDL_BlitScaled(text, NULL, surface, &dst);
 
   return surface;
 }

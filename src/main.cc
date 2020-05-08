@@ -7,12 +7,15 @@
 //Initialize all global variables
 int Global::_WIDTH = 1280;
 int Global::_HEIGHT = 720;
+int Global::_BORDERS = 20;
 
 Presentation* Global::_PRESENT = nullptr;
 int Global::_CSLIDE = -1;
 
 TTF_Font* Global::_FONT = nullptr;
 TTF_Font* Global::_DEFAULTFONT = nullptr;
+SDL_Color* Global::_TEXTCOLOR = nullptr;
+SDL_Color* Global::_DEFAULTTEXTCOLOR = nullptr;
 
 int main(int argc, char* argv[])
 {
@@ -32,6 +35,10 @@ int main(int argc, char* argv[])
 	Global::_DEFAULTFONT = TTF_OpenFont("dat/defaultFont.ttf", 16);
 	Global::_FONT = Global::_DEFAULTFONT;
 
+	//Crate default Textcolor
+	Global::_DEFAULTTEXTCOLOR = new SDL_Color {33, 33, 33};
+	Global::_TEXTCOLOR = Global::_DEFAULTTEXTCOLOR;
+
 	//Split input file into tokens
 	std::vector<std::string> tokens = tokenize(argv[1]);
 	if (tokens.size() == 0)
@@ -41,6 +48,7 @@ int main(int argc, char* argv[])
 
 	//Create global Presentation object
 	Global::_PRESENT = new Presentation();
+	Global::_PRESENT->background = "none";
 
 	//Parse tokens to global Presentation object
 	parse(tokens);

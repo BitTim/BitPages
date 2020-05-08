@@ -31,11 +31,11 @@ bin/.cache/%.d: %.cc
 init:
 	@mkdir -p bin/.cache/src
 	@rsync -a -f"+ */" -f"- *" src/ bin/.cache/src/
-	@mkdir log
+	@mkdir .cache
 
 delDirs:
 	@rm -R bin
-	@rm -R log
+	@rm -R .cache
 
 clean: delDirs init
 

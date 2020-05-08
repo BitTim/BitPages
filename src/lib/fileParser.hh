@@ -80,6 +80,20 @@ void parse(std::vector<std::string> tokens)
 			continue;
 		}
 
+		if(tokens[i] == ".color")
+		{
+			i += 1;
+			if(tokens[i] == "default") Global::_TEXTCOLOR = Global::_DEFAULTTEXTCOLOR;
+			else
+			{
+				uint8_t r = std::stoi(tokens[i].substr(0, 2), nullptr, 16);
+				uint8_t g = std::stoi(tokens[i].substr(2, 2), nullptr, 16);
+				uint8_t b = std::stoi(tokens[i].substr(4, 2), nullptr, 16);
+
+				Global::_TEXTCOLOR = new SDL_Color {r, g, b};
+			}
+		}
+
 		//Check for other defining Tokens
 		if(tokens[i][0] == '<' && tokens[i][tokens[i].length() - 1] == '>')
 		{
@@ -88,6 +102,7 @@ void parse(std::vector<std::string> tokens)
 
 			Global::_PRESENT->slides[Global::_CSLIDE].titleSlide = true;
 			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
+			printf("[DEBUG]: Title: %s\n", tokens[i].substr(1, tokens[i].length() - 2).c_str());
 			continue;
 		}
 

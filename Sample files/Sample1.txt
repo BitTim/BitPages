@@ -1,4 +1,5 @@
-.background /home/tim/Coding/Sample Files/sampleImage.png
+.background /home/tim/Coding/BitPresent/Sample files/sampleImage.png
+.color CDCDCD
 
 <Topic 1 (Title Slide)>
 -Subtitle-
