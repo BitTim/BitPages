@@ -25,7 +25,7 @@ Make sure to have following installed:
 And their dependencies. After that, run following commands:
 
 ```
-git clone httpps://github.com/bittim/bitpresent/BitPresent
+git clone https://github.com/bittim/bitpresent/BitPresent
 cd BitPresent
 make init
 make
