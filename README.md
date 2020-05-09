@@ -26,7 +26,7 @@ And their dependencies. After that, run following commands:
 
 ```
 git clone https://github.com/bittim/bitpresent/BitPresent
-cd BitPresent
+cd BitPresent/Linux/
 make init
 make
 ```
@@ -41,4 +41,4 @@ Install following through vcpkg:
 * sdl2-image[libwebp]
 * libharu
 
-Open the project in Visual Studio and build
+Open the project, which is located in the Windows folder, in Visual Studio and build
