@@ -44,6 +44,6 @@ After that run the following commands:
 ```
 git clone https://github.com/bittim/bitpresent/BitPresent
 cd BitPresent
-make init
+make init TARGET=windows
 make PRODUCT=BitPresent.exe CXX=x86_64-w64-mingw32-g++
 ```
