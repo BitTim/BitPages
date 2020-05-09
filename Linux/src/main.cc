@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 		SDL_Surface* surface = generateSurface(i);
 		if (surface == nullptr) return -1;
 
-		saveImage(surface, "cache/" + std::to_string(i) + ".png");
+		saveImage(surface, ".cache/" + std::to_string(i) + ".png");
 		SDL_FreeSurface(surface);
 	}
 
