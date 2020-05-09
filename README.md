@@ -40,5 +40,5 @@ Install following through vcpkg:
 * sdl2-image[libjpeg-turbo]
 * sdl2-image[libwebp]
 * libharu
+
 Open the project in Visual Studio and build
-* 
