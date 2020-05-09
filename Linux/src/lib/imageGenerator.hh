@@ -4,8 +4,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "objects.h"
-#include "globals.h"
+#include "objects.hh"
+#include "globals.hh"
 
 SDL_Surface* generateSurface(int slide)
 {

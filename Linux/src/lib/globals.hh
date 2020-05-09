@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include "objects.h"
+#include "objects.hh"
 
 struct Global
 {

@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "lib/globals.h"
-#include "lib/fileParser.h"
-#include "lib/imageGenerator.h"
-#include "lib/pdfCreator.h"
+#include "lib/globals.hh"
+#include "lib/fileParser.hh"
+#include "lib/imageGenerator.hh"
+#include "lib/pdfCreator.hh"
 
 //Initialize all global variables
 std::string Global::_VERSIONSTRING = "BitPresent v1.1.0";

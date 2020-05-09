@@ -5,7 +5,7 @@
 #include <string>
 #include <fstream>
 
-#include "objects.h"
+#include "objects.hh"
 
 std::vector<std::string> tokenize(std::string path)
 {
