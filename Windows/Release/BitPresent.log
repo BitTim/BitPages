@@ -1,0 +1,16 @@
+﻿  BitPresent.cpp
+D:\Coding\BitPresentWindows\BitPresent\fileParser.h(50,20): warning C4018: '<': signed/unsigned mismatch
+D:\Coding\BitPresentWindows\BitPresent\imageGenerator.h(125,27): warning C4018: '<': signed/unsigned mismatch
+D:\Coding\BitPresentWindows\BitPresent\imageGenerator.h(149,30): warning C4018: '<': signed/unsigned mismatch
+D:\Coding\BitPresentWindows\BitPresent\pdfCreator.h(24,23): warning C4018: '<': signed/unsigned mismatch
+D:\Coding\BitPresentWindows\BitPresent\pdfCreator.h(27,46): warning C4244: 'argument': conversion from 'int' to 'HPDF_REAL', possible loss of data
+D:\Coding\BitPresentWindows\BitPresent\pdfCreator.h(28,47): warning C4244: 'argument': conversion from 'int' to 'HPDF_REAL', possible loss of data
+D:\Coding\BitPresentWindows\BitPresent\pdfCreator.h(31,100): warning C4244: 'argument': conversion from 'HPDF_UINT' to 'HPDF_REAL', possible loss of data
+D:\Coding\BitPresentWindows\BitPresent\pdfCreator.h(31,71): warning C4244: 'argument': conversion from 'HPDF_UINT' to 'HPDF_REAL', possible loss of data
+D:\Coding\BitPresentWindows\BitPresent\BitPresent.cpp(94,20): warning C4018: '<': signed/unsigned mismatch
+  Generating code
+  1 of 566 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  BitPresent.vcxproj -> D:\Coding\BitPresentWindows\BitPresent\Release\BitPresent.exe
