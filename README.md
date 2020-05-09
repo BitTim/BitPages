@@ -45,5 +45,5 @@ After that run the following commands:
 git clone https://github.com/bittim/bitpresent/BitPresent
 cd BitPresent
 make init TARGET=windows
-make PRODUCT=BitPresent.exe CXX=x86_64-w64-mingw32-g++ CXXLIBS="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf"
+make PRODUCT=BitPresent.exe CXX=i686-w64-mingw32-g++ CXXLIBS="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf" CXXFLAGS="-c -static-libgcc -static-libstdc++"
 ```
