@@ -7,6 +7,8 @@
 
 #include "objects.h"
 
+int nDotWarn = 0;
+
 std::vector<std::string> tokenize(std::string path)
 {
 	std::vector<std::string> tokens;
@@ -16,17 +18,18 @@ std::vector<std::string> tokenize(std::string path)
 
 	std::string line;
 	std::string buffer;
+	int cline = 0;
 
 	while (std::getline(file, line))
 	{
-		if (line == "") continue;
-
+		cline += 1;
 		if (line[0] == '.')
 		{
 			int index = line.find(" ");
 			if (index == std::string::npos)
 			{
-				printf("[WARNING]: Invalid '.background' statement. Ignoring\n");
+				printf("[WARNING](Line %d): Invalid '.' command statement. Ignoring\n", cline);
+				nDotWarn++;
 				continue;
 			}
 			else
@@ -47,13 +50,20 @@ std::vector<std::string> tokenize(std::string path)
 
 void parse(std::vector<std::string> tokens)
 {
+	int cline = nDotWarn;
+
 	for (int i = 0; i < tokens.size(); i++)
 	{
+		cline += 1;
+
+		//Skip empty tokens
+		if (tokens[i] == "") continue;
+
 		//Check for commands
 		if (tokens[i] == ".background")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING]: Using instruction(\"%s\") as argument for '.background'\n", tokens[i].c_str());
+			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.background'\n", cline, tokens[i].c_str());
 			Global::_BACKGROUND = tokens[i];
 			continue;
 		}
@@ -61,7 +71,7 @@ void parse(std::vector<std::string> tokens)
 		if (tokens[i] == ".image")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING]: Using instruction(\"%s\") as argument for '.image'\n", tokens[i].c_str());
+			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
 			if (Global::_CSLIDE < 0) printf("[WARNING]: '.image' used outside of a slide. Ignoring...\n");
 			else Global::_PRESENT->slides[Global::_CSLIDE].image = tokens[i];
 			continue;
@@ -70,11 +80,11 @@ void parse(std::vector<std::string> tokens)
 		if (tokens[i] == ".font")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING]: Using instruction(\"%s\") as argument for '.image'\n", tokens[i].c_str());
+			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') printf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
 			Global::_FONT = { {"title", TTF_OpenFont(tokens[i].c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].c_str(), 34)} };
 			if (Global::_FONT["title"] == NULL || Global::_FONT["subtitle"] == NULL || Global::_FONT["normal"] == NULL)
 			{
-				printf("[ERROR]: Error loading font. Reverting to default\n");
+				printf("[ERROR](Line %d): Error loading font. Reverting to default\n", cline);
 				Global::_FONT = Global::_DEFAULTFONT;
 			}
 			continue;
@@ -92,6 +102,7 @@ void parse(std::vector<std::string> tokens)
 
 				Global::_TEXTCOLOR = new SDL_Color{ r, g, b };
 			}
+			continue;
 		}
 
 		//Check for other defining Tokens
@@ -118,15 +129,15 @@ void parse(std::vector<std::string> tokens)
 
 		if (tokens[i][0] == '-' && tokens[i][tokens[i].length() - 1] == '-')
 		{
-			if (Global::_CSLIDE < 0) printf("[WARNING]: Defined subtitle outside of a slide. Ignoring...\n");
+			if (Global::_CSLIDE < 0) printf("[WARNING](Line %d): Defined subtitle outside of a slide. Ignoring...\n", cline);
 			else Global::_PRESENT->slides[Global::_CSLIDE].subtitle = tokens[i].substr(1, tokens[i].length() - 2);
 			continue;
 		}
 
 		if (tokens[i][0] == '*')
 		{
-			if (Global::_CSLIDE < 0) printf("[WARNING]: Defined subpoint outside of a slide. Ignoring...\n");
-			else if (Global::_CPOINT < 0) printf("[WARNING]: Defined subpoint outside of a point. Ignoring...\n");
+			if (Global::_CSLIDE < 0) printf("[WARNING](Line %d): Defined subpoint outside of a slide. Ignoring...\n", cline);
+			else if (Global::_CPOINT < 0) printf("[WARNING](Line %d): Defined subpoint outside of a point. Ignoring...\n", cline);
 			else
 			{
 				int cutoff = 1;
@@ -137,7 +148,7 @@ void parse(std::vector<std::string> tokens)
 		}
 
 		//Add non-special strings as points to slides
-		if (Global::_CSLIDE < 0) printf("[WARNING]: Defined point outside of a slide. Ignoring...\n");
+		if (Global::_CSLIDE < 0) printf("[WARNING](Line %d): Defined point outside of a slide. Ignoring...\n", cline);
 		else
 		{
 			Global::_PRESENT->slides[Global::_CSLIDE].points.push_back(Point(tokens[i]));

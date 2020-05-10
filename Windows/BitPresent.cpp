@@ -6,7 +6,7 @@
 #include "pdfCreator.h"
 
 //Initialize all global variables
-std::string Global::_VERSIONSTRING = "BitPresent v1.1.0";
+std::string Global::_VERSIONSTRING = "BitPresent v1.1.1";
 
 int Global::_WIDTH = 1920;
 int Global::_HEIGHT = 1080;
