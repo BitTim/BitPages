@@ -33,6 +33,7 @@
 
 # Cached files
 .cache
+cache
 build
 
 # Binaries
