@@ -22,6 +22,7 @@ Make sure to have following installed:
 * libsdl2-ttf (libsdl2-ttf-dev on Ubuntu based)
 * libsdl2-image (libsdl2-image-dev on Ubuntu based)
 * libharu
+
 And their dependencies. After that, run following commands:
 
 ```
