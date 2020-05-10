@@ -6,6 +6,7 @@
 struct Point
 {
 	Point(std::string t) { text = t; }
+
 	std::string text;
 	std::vector<std::string> subPoints;
 };

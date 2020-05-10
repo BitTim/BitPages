@@ -14,7 +14,7 @@ struct Global
     static int _BORDERS;
     static int _INDENT;
 
-    static std::string _OUTPATH;
+    static bool useGUI;
 
     static Presentation* _PRESENT;
     static int _CSLIDE;
