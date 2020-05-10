@@ -3,7 +3,7 @@ vpath %.cc src
 PRODUCT := bitPresent
 
 CXX := g++
-CXXFLAGS := -c -g `pkg-config --cflags gtk+-3.0`
+CXXFLAGS := -c `pkg-config --cflags gtk+-3.0`
 CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `pkg-config --libs gtk+-3.0`
 CXXINCDIRS := -I.
 
