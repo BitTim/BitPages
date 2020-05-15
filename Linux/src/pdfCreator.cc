@@ -28,7 +28,7 @@ int createPDF(std::string outpath)
   if(Global::useGUI) progress();
 
   std::vector<HPDF_Page> pages;
-  for(int i = 0; i < Global::_PRESENT->slides.size(); i++)
+  for(int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides.size(); i++)
   {
     pages.push_back(HPDF_AddPage(pdf));
     HPDF_Page_SetWidth(pages[i], Global::_WIDTH);

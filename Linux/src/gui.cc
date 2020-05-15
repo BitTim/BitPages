@@ -93,7 +93,18 @@ void guiMain::OnCreateBtnClicked(wxCommandEvent &evt)
 {
   if(inputPathBox->GetValue() == wxEmptyString) wxMessageBox(wxT("Please specify an input file and try again"), wxT("No input file specified"), wxICON_WARNING);
   else if(outputPathBox->GetValue() == wxEmptyString) wxMessageBox(wxT("Please specify an output file and try again"), wxT("No output file specified"), wxICON_WARNING);
-  else createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
+  else
+  {
+    createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
+    terminal->SetDefaultStyle(wxTextAttr(*wxGREEN));
+    gprintf("You may now close this application\n");
+
+    inputPathBox->Enable(false);
+    outputPathBox->Enable(false);
+    inputBrowseBtn->Enable(false);
+    outputBrowseBtn->Enable(false);
+    createBtn->Enable(false);
+  }
   evt.Skip();
 }
 

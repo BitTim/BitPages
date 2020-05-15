@@ -18,7 +18,8 @@ struct Global
     static bool useGUI;
     static guiApp* gApp;
 
-    static Presentation* _PRESENT;
+    static std::vector<Presentation*> _PRESENT;
+    static int _CPRESENT;
     static int _CSLIDE;
     static int _CPOINT;
 

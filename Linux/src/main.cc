@@ -13,7 +13,8 @@ int Global::_HEIGHT = 1080;
 int Global::_BORDERS = 20;
 int Global::_INDENT = 40;
 
-Presentation* Global::_PRESENT = nullptr;
+std::vector<Presentation*> Global::_PRESENT;
+int Global::_CPRESENT = -1;
 int Global::_CSLIDE = -1;
 int Global::_CPOINT = -1;
 

@@ -54,7 +54,7 @@ void parse(std::vector<std::string> tokens)
 {
 	int cline = nDotWarn;
 
-	if(Global::_PRESENT == nullptr)
+	if(Global::_PRESENT[Global::_CPRESENT] == nullptr)
 	{
 		gprintf("[ERROR]: Presentation object does not exist\n");
 		return;
@@ -81,7 +81,7 @@ void parse(std::vector<std::string> tokens)
 			i += 1;
 			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') gprintf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
 			if (Global::_CSLIDE < 0) gprintf("[WARNING]: '.image' used outside of a slide. Ignoring...\n");
-			else Global::_PRESENT->slides[Global::_CSLIDE].image = tokens[i];
+			else Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].image = tokens[i];
 			continue;
 		}
 
@@ -116,29 +116,36 @@ void parse(std::vector<std::string> tokens)
 		//Check for other defining Tokens
 		if (tokens[i][0] == '<' && tokens[i][tokens[i].length() - 1] == '>')
 		{
-			Global::_PRESENT->slides.push_back(Slide());
+			Global::_PRESENT[Global::_CPRESENT]->slides.push_back(Slide());
 			Global::_CSLIDE = Global::_CSLIDE + 1;
 			Global::_CPOINT = -1;
 
-			Global::_PRESENT->slides[Global::_CSLIDE].titleSlide = true;
-			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
+			Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].titleSlide = true;
+
+			std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+			Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].title = tmp;
 			continue;
 		}
 
 		if (tokens[i][0] == '[' && tokens[i][tokens[i].length() - 1] == ']')
 		{
-			Global::_PRESENT->slides.push_back(Slide());
+			Global::_PRESENT[Global::_CPRESENT]->slides.push_back(Slide());
 			Global::_CSLIDE = Global::_CSLIDE + 1;
 			Global::_CPOINT = -1;
 
-			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
+			std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+			Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].title = tmp;
 			continue;
 		}
 
 		if (tokens[i][0] == '-' && tokens[i][tokens[i].length() - 1] == '-')
 		{
 			if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined subtitle outside of a slide. Ignoring...\n", cline);
-			else Global::_PRESENT->slides[Global::_CSLIDE].subtitle = tokens[i].substr(1, tokens[i].length() - 2);
+			else
+			{
+				std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+				Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].subtitle = tmp;
+			}
 			continue;
 		}
 
@@ -150,7 +157,7 @@ void parse(std::vector<std::string> tokens)
 			{
 				int cutoff = 1;
 				if (tokens[i][1] == ' ') cutoff = 2;
-				Global::_PRESENT->slides[Global::_CSLIDE].points[Global::_CPOINT].subPoints.push_back(tokens[i].substr(cutoff, tokens[i].length() - 1));
+				Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].points[Global::_CPOINT].subPoints.push_back(tokens[i].substr(cutoff, tokens[i].length() - 1));
 			}
 			continue;
 		}
@@ -159,8 +166,10 @@ void parse(std::vector<std::string> tokens)
 		if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined point outside of a slide. Ignoring...\n", cline);
 		else
 		{
-			Global::_PRESENT->slides[Global::_CSLIDE].points.push_back(Point(tokens[i]));
+			Global::_PRESENT[Global::_CPRESENT]->slides[Global::_CSLIDE].points.push_back(Point(tokens[i]));
 			Global::_CPOINT = Global::_CPOINT + 1;
 		}
 	}
+
+	tokens.clear();
 }

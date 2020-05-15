@@ -25,7 +25,8 @@ int createPresent(std::string inpath, std::string outpath)
 	}
 
 	//Create global Presentation object
-	Global::_PRESENT = new Presentation();
+	Global::_PRESENT.push_back(new Presentation());
+	Global::_CPRESENT += 1;
 
 	//Parse tokens to global Presentation object
 	parse(tokens);
@@ -35,9 +36,10 @@ int createPresent(std::string inpath, std::string outpath)
 		changeStatus("Creating Images");
 		progress();
 	}
+	tokens.clear();
 
 	//Generate images for each Slide
-	for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
+	for (int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides.size(); i++)
 	{
 		SDL_Surface* surface = generateSurface(i);
 		if (surface == nullptr) return -1;
@@ -59,9 +61,8 @@ int createPresent(std::string inpath, std::string outpath)
 	if(Global::useGUI) changeStatus("Finished");
 
 	//Cleanup
-	delete Global::_PRESENT;
+	Global::_PRESENT[Global::_CPRESENT]->clean();
 
 	gprintf("[FINISHED]: Done creating presentation\n");
-
 	return 0;
 }
