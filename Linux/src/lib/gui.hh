@@ -44,8 +44,6 @@ class guiApp : public wxApp
 {
 public:
   virtual bool OnInit();
-
-private:
   guiMain* mainFrame = nullptr;
 };
 

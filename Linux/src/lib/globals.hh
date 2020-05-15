@@ -4,6 +4,7 @@
 #include <string>
 
 #include "objects.hh"
+#include "gui.hh"
 
 struct Global
 {
@@ -15,6 +16,7 @@ struct Global
     static int _INDENT;
 
     static bool useGUI;
+    static guiApp* gApp;
 
     static Presentation* _PRESENT;
     static int _CSLIDE;

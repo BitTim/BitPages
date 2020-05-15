@@ -25,6 +25,7 @@ std::string Global::_BACKGROUND = "";
 std::string Global::_DEFAULTBACKGROUND = "";
 
 bool Global::useGUI = false;
+guiApp* Global::gApp = nullptr;
 
 int main(int argc, char* argv[])
 {
@@ -73,8 +74,8 @@ int main(int argc, char* argv[])
 	if(Global::useGUI)
 	{
 		//Init and enter GUI
-		wxApp* gApp = new guiApp(); 
-		wxApp::SetInstance(gApp);
+		Global::gApp = new guiApp(); 
+		wxApp::SetInstance(Global::gApp);
 		wxEntry(argc, argv);
 		wxEntryCleanup();
 	}

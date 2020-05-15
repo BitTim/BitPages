@@ -34,7 +34,7 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
   createBtn = new wxButton(this, 10003, _("Create"), wxPoint(520, 140), wxSize(100, 20));
   closeBtn = new wxButton(this, 10004, _("Close"), wxPoint(410, 140), wxSize(100, 20));
   progressBar = new wxGauge(this, wxID_ANY, ' ', wxPoint(20, 170), wxSize(600, 20));
-  terminal = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxPoint(20, 200), wxSize(600, 260), (wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH));
+  terminal = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxPoint(20, 200), wxSize(600, 260), (wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_RICH2));
 
   wxFont font = title->GetFont();
   font.SetPointSize(30);
@@ -51,7 +51,7 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
   font = terminal->GetFont();
   font.SetFamily(wxFONTFAMILY_TELETYPE);
   terminal->SetFont(font);
-  terminal->AppendText("Ready\n");
+  terminal->AppendText(Global::_VERSIONSTRING + " - Ready\n");
 
   openFileDialog = new wxFileDialog(this, _("Select an input file"), wxEmptyString, wxEmptyString, "Text files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
   saveFileDialog = new wxFileDialog(this, _("Select an output file"), wxEmptyString, "Presentation.pdf", "PDF Documents (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -106,10 +106,9 @@ void gprintf(std::string format, ...)
   printf("%s", tmp.c_str());
   if(Global::useGUI)
   {
-    //gtk_text_buffer_get_end_iter(buffer, &bufferEnd);
-    //gtk_text_buffer_insert(buffer, &bufferEnd, tmp.c_str() , -1);
-
-    //while (gtk_events_pending ()) gtk_main_iteration ();
+    Global::gApp->mainFrame->terminal->AppendText(tmp);
+    Global::gApp->mainFrame->Refresh();
+    Global::gApp->mainFrame->Update();
   }
 
   va_end(args);
