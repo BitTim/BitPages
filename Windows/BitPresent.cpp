@@ -1,21 +1,20 @@
 #include <iostream>
+#include <SDL2/SDL_image.h>
 
 #include "globals.h"
-#include "fileParser.h"
-#include "imageGenerator.h"
-#include "pdfCreator.h"
+#include "presentCreator.h"
+#include "gui.h"
 
 //Initialize all global variables
-std::string Global::_VERSIONSTRING = "BitPresent v1.1.0";
+std::string Global::_VERSIONSTRING = "BitPresent v1.2.0";
 
 int Global::_WIDTH = 1920;
 int Global::_HEIGHT = 1080;
 int Global::_BORDERS = 20;
 int Global::_INDENT = 40;
 
-std::string Global::_OUTPATH = "";
-
-Presentation* Global::_PRESENT = nullptr;
+std::vector<Presentation*> Global::_PRESENT;
+int Global::_CPRESENT = -1;
 int Global::_CSLIDE = -1;
 int Global::_CPOINT = -1;
 
@@ -26,32 +25,39 @@ SDL_Color* Global::_DEFAULTTEXTCOLOR = nullptr;
 std::string Global::_BACKGROUND = "";
 std::string Global::_DEFAULTBACKGROUND = "";
 
+bool Global::useGUI = false;
+guiApp* Global::gApp = nullptr;
+std::string Global::_INPATH = "";
+
+std::string Global::_STATUS = "Ready";
+int Global::_MAXPROGRESS = 7;
+int Global::_PROGRESS = 0;
+
 int main(int argc, char* argv[])
 {
 	std::string inpath = "";
+	std::string outpath = "";
 
 	//Check Argument length
 	if (argc > 3)
 	{
 		printf("[ERROR]: Too many arguments\n");
+		printf("[USAGE]: bitPresent <input_path> [<output_path>]\n");
 		return -1;
 	}
 
-	printf("%s\n", Global::_VERSIONSTRING.c_str());
-
-	if (argc < 2)
-	{
-		printf("[USAGE]: bitPresent <input_path> [<output_path>]\n\n");
-		printf("Please enter the input file path: ");
-		getline(std::cin, inpath);
-		printf("Please enter the output file path: ");
-		getline(std::cin, Global::_OUTPATH);
-	}
+	if (argc < 2) Global::useGUI = true;
 	else
 	{
 		inpath = argv[1];
-		if (argc == 3) Global::_OUTPATH = argv[2];
-		else Global::_OUTPATH = "presentation.pdf";
+		int lastDirSep = inpath.find_last_of("/\\");
+		std::string tmp = inpath.substr(0, lastDirSep + 1);
+		inpath = tmp;
+
+		Global::_INPATH = inpath;
+
+		if (argc == 3) outpath = argv[2];
+		else outpath = "presentation.pdf";
 	}
 
 	//Initialize SDL for future Ops
@@ -76,35 +82,16 @@ int main(int argc, char* argv[])
 	Global::_DEFAULTBACKGROUND = "none";
 	Global::_BACKGROUND = Global::_DEFAULTBACKGROUND;
 
-	//Split input file into tokens
-	std::vector<std::string> tokens = tokenize(inpath);
-	if (tokens.size() == 0)
+	//Create Presentation
+	if (Global::useGUI)
 	{
-		printf("[ERROR]: Error while opening file\n");
-		return -1;
+		//Init and enter GUI
+		Global::gApp = new guiApp();
+		wxApp::SetInstance(Global::gApp);
+		wxEntry(argc, argv);
+		wxEntryCleanup();
 	}
-
-	//Create global Presentation object
-	Global::_PRESENT = new Presentation();
-
-	//Parse tokens to global Presentation object
-	parse(tokens);
-
-	//Generate images for each Slide
-	for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
-	{
-		SDL_Surface* surface = generateSurface(i);
-		if (surface == nullptr) return -1;
-
-		saveImage(surface, "cache/" + std::to_string(i) + ".png");
-		SDL_FreeSurface(surface);
-	}
-
-	printf("[OK]: Created all Images\n");
-
-	//Create PDF
-	createPDF();
-	printf("[OK]: Created PDF file\n");
+	else if (createPresent(inpath, outpath) == -1) return -1;
 
 	//Clear Fonts
 	TTF_CloseFont(Global::_FONT["title"]);
@@ -115,8 +102,6 @@ int main(int argc, char* argv[])
 	IMG_Quit();
 	TTF_Quit();
 	SDL_Quit();
-
-	printf("[FINISHED]: Done creating presentation\n");
 
 	return 0;
 }
