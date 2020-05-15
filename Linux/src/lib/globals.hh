@@ -4,6 +4,7 @@
 #include <string>
 
 #include "objects.hh"
+#include "gui.hh"
 
 struct Global
 {
@@ -14,9 +15,12 @@ struct Global
     static int _BORDERS;
     static int _INDENT;
 
-    static std::string _OUTPATH;
+    static bool useGUI;
+    static guiApp* gApp;
+    static std::string _INPATH;
 
-    static Presentation* _PRESENT;
+    static std::vector<Presentation*> _PRESENT;
+    static int _CPRESENT;
     static int _CSLIDE;
     static int _CPOINT;
 
@@ -26,4 +30,8 @@ struct Global
     static SDL_Color* _DEFAULTTEXTCOLOR;
     static std::string _BACKGROUND;
     static std::string _DEFAULTBACKGROUND;
+
+    static std::string _STATUS;
+    static int _MAXPROGRESS;
+    static int _PROGRESS;
 };

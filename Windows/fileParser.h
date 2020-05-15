@@ -1,8 +1,6 @@
 #pragma once
-
-#include <algorithm>
-#include <vector>
 #include <string>
+<<<<<<< HEAD
 #include <fstream>
 
 #include "objects.h"
@@ -157,3 +155,10 @@ void parse(std::vector<std::string> tokens)
 	}
 	printf("[OK]: Finished Parsing\n");
 }
+=======
+
+extern int nDotWarn;
+
+extern std::vector<std::string> tokenize(std::string path);
+extern void parse(std::vector<std::string> tokens);
+>>>>>>> gui

@@ -3,8 +3,8 @@ vpath %.cc src
 PRODUCT := bitPresent
 
 CXX := g++
-CXXFLAGS := -c -g
-CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf
+CXXFLAGS := -c -std=c++17 `wx-config-gtk3 --cxxflags`
+CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs`
 CXXINCDIRS := -I.
 
 SOURCE := $(shell find . -name *.cc)

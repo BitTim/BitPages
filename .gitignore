@@ -33,6 +33,7 @@
 
 # Cached files
 .cache
+<<<<<<< HEAD
 cache
 build
 
@@ -41,3 +42,9 @@ bitPresent
 
 # VSCode
 .vscode
+=======
+build
+
+# Binaries
+bitPresent
+>>>>>>> gui
