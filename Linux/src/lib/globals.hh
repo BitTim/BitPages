@@ -28,4 +28,8 @@ struct Global
     static SDL_Color* _DEFAULTTEXTCOLOR;
     static std::string _BACKGROUND;
     static std::string _DEFAULTBACKGROUND;
+
+    static std::string _STATUS;
+    static int _MAXPROGRESS;
+    static int _PROGRESS;
 };

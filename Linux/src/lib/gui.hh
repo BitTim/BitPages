@@ -48,3 +48,8 @@ public:
 };
 
 void gprintf(std::string format, ...);
+void changeStatus(std::string status);
+void progress();
+
+void clearTerminal();
+void resetProgress();

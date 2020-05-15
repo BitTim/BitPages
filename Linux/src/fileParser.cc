@@ -44,6 +44,8 @@ std::vector<std::string> tokenize(std::string path)
 		}
 	}
 
+	if(Global::useGUI) progress();
+
 	file.close();
 	return tokens;
 }

@@ -14,7 +14,7 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
   title = new wxStaticText(this, wxID_ANY, Global::_VERSIONSTRING, wxPoint(20, 10), wxSize(600, 60));
   inputLabel = new wxStaticText(this, wxID_ANY, "Input (.txt):", wxPoint(20, 80));
   outputLabel = new wxStaticText(this, wxID_ANY, "Output (.pdf):", wxPoint(20, 110));
-  statusLabel = new wxStaticText(this, wxID_ANY, "Ready", wxPoint(20, 140));
+  statusLabel = new wxStaticText(this, wxID_ANY, Global::_STATUS, wxPoint(20, 140), wxSize(380, 20));
 
   pngHandler = new wxPNGHandler();
   wxImage tmp;
@@ -35,6 +35,9 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
   closeBtn = new wxButton(this, 10004, _("Close"), wxPoint(410, 140), wxSize(100, 20));
   progressBar = new wxGauge(this, wxID_ANY, ' ', wxPoint(20, 170), wxSize(600, 20));
   terminal = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxPoint(20, 200), wxSize(600, 260), (wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_RICH2));
+
+  progressBar->SetRange(Global::_MAXPROGRESS);
+  progressBar->SetValue(0);
 
   wxFont font = title->GetFont();
   font.SetPointSize(30);
@@ -88,7 +91,9 @@ void guiMain::OnCloseBtnClicked(wxCommandEvent &evt)
 
 void guiMain::OnCreateBtnClicked(wxCommandEvent &evt)
 {
-  createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
+  if(inputPathBox->GetValue() == wxEmptyString) wxMessageBox(wxT("Please specify an input file and try again"), wxT("No input file specified"), wxICON_WARNING);
+  else if(outputPathBox->GetValue() == wxEmptyString) wxMessageBox(wxT("Please specify an output file and try again"), wxT("No output file specified"), wxICON_WARNING);
+  else createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
   evt.Skip();
 }
 
@@ -107,9 +112,33 @@ void gprintf(std::string format, ...)
   if(Global::useGUI)
   {
     Global::gApp->mainFrame->terminal->AppendText(tmp);
-    Global::gApp->mainFrame->Refresh();
-    Global::gApp->mainFrame->Update();
+    wxYield();
   }
 
   va_end(args);
+}
+
+void changeStatus(std::string status)
+{
+  Global::_STATUS = status;
+  Global::gApp->mainFrame->statusLabel->SetLabelText(status);
+}
+
+void progress()
+{
+  Global::_PROGRESS += 1;
+
+  Global::gApp->mainFrame->progressBar->SetValue(Global::_PROGRESS);
+  wxYield();
+}
+
+void clearTerminal()
+{
+  Global::gApp->mainFrame->terminal->SetValue(Global::_VERSIONSTRING + " - Ready\n");
+}
+
+void resetProgress()
+{
+  Global::_PROGRESS = 0;
+  Global::gApp->mainFrame->progressBar->SetValue(0);
 }

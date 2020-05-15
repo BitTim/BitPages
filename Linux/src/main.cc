@@ -27,6 +27,10 @@ std::string Global::_DEFAULTBACKGROUND = "";
 bool Global::useGUI = false;
 guiApp* Global::gApp = nullptr;
 
+std::string Global::_STATUS = "Ready";
+int Global::_MAXPROGRESS = 7;
+int Global::_PROGRESS = 0;
+
 int main(int argc, char* argv[])
 {
 	std::string inpath = "";
