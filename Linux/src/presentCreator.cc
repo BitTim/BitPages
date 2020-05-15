@@ -11,8 +11,8 @@ int createPresent(std::string inpath, std::string outpath)
   printf("%s\n", Global::_VERSIONSTRING.c_str());
 	if(Global::useGUI)
 	{
-		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0);
-		gtk_text_buffer_set_text(buffer, (Global::_VERSIONSTRING + "\n").c_str(), -1);
+		//gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0);
+		//gtk_text_buffer_set_text(buffer, (Global::_VERSIONSTRING + "\n").c_str(), -1);
 	}
   
   //Split input file into tokens
@@ -29,7 +29,7 @@ int createPresent(std::string inpath, std::string outpath)
 	//Parse tokens to global Presentation object
 	parse(tokens);
 	gprintf("[OK]: Finished Parsing\n");
-	if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.34);
+	//if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.34);
 
 	//Generate images for each Slide
 	for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
@@ -42,12 +42,12 @@ int createPresent(std::string inpath, std::string outpath)
 	}
 
 	gprintf("[OK]: Created all Images\n");
-	if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.67);
+	//if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.67);
 
 	//Create PDF
 	createPDF(outpath);
 	gprintf("[OK]: Created PDF file\n");
-	if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 1);
+	//if(Global::useGUI) gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 1);
 
 	//Cleanup
 	delete Global::_PRESENT;

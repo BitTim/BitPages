@@ -1,10 +1,19 @@
 #pragma once
-#include <wx/wx.h>
+
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+  #include <wx/wx.h>
+#endif
 
 class guiMain : public wxFrame
 {
 public:
   guiMain();
+
+  wxStaticText* title;
+  wxStaticText* inputLabel;
+  wxStaticText* outputLabel;
+  wxStaticText* statusLabel;
 
   wxTextCtrl* inputPathBox;
   wxTextCtrl* outputPathBox;
@@ -23,3 +32,5 @@ public:
 private:
   guiMain* mainFrame = nullptr;
 };
+
+void gprintf(std::string format, ...);
