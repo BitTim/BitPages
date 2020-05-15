@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
 	Global::_BACKGROUND = Global::_DEFAULTBACKGROUND;
 
 	//Create Presentation
-	if(Global::useGUI) gtkInit(&argc, &argv);
-	else if(createPresent(inpath, outpath) == -1) return -1;
+	//if(Global::useGUI) gtkInit(&argc, &argv);
+	//else if(createPresent(inpath, outpath) == -1) return -1;
 
 	//Clear Fonts
 	TTF_CloseFont(Global::_FONT["title"]);

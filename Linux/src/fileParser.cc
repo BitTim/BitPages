@@ -5,6 +5,7 @@
 #include "lib/fileParser.hh"
 #include "lib/objects.hh"
 #include "lib/gui.hh"
+#include "lib/globals.hh"
 
 int nDotWarn = 0;
 
@@ -118,7 +119,7 @@ void parse(std::vector<std::string> tokens)
 			Global::_CPOINT = -1;
 
 			Global::_PRESENT->slides[Global::_CSLIDE].titleSlide = true;
-			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i];
+			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
 			continue;
 		}
 
@@ -128,14 +129,14 @@ void parse(std::vector<std::string> tokens)
 			Global::_CSLIDE = Global::_CSLIDE + 1;
 			Global::_CPOINT = -1;
 
-			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i];
+			Global::_PRESENT->slides[Global::_CSLIDE].title = tokens[i].substr(1, tokens[i].length() - 2);
 			continue;
 		}
 
 		if (tokens[i][0] == '-' && tokens[i][tokens[i].length() - 1] == '-')
 		{
 			if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined subtitle outside of a slide. Ignoring...\n", cline);
-			else Global::_PRESENT->slides[Global::_CSLIDE].subtitle = tokens[i];
+			else Global::_PRESENT->slides[Global::_CSLIDE].subtitle = tokens[i].substr(1, tokens[i].length() - 2);
 			continue;
 		}
 
