@@ -1,5 +1,8 @@
 #include "lib/imageGenerator.hh"
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 #include "lib/objects.hh"
 #include "lib/globals.hh"
 #include "lib/gui.hh"
@@ -13,6 +16,13 @@ SDL_Surface* generateSurface(int slide)
     SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 255, 255, 255));
     if (Global::_BACKGROUND != "none" && Global::_BACKGROUND != "default")
     {
+        if(fs::path(Global::_BACKGROUND).is_relative())
+        {
+            std::string tmp;
+            tmp = Global::_INPATH + Global::_BACKGROUND;
+            Global::_BACKGROUND = tmp;
+        }
+
         image = IMG_Load(Global::_BACKGROUND.c_str());
         if (image == NULL) gprintf("[ERROR]: Rendering Background: %s\n", SDL_GetError());
         else SDL_BlitScaled(image, NULL, surface, NULL);
@@ -92,6 +102,13 @@ SDL_Surface* generateSurface(int slide)
 
         if (Global::_PRESENT[Global::_CPRESENT]->slides[slide].image != "none")
         {
+            if(fs::path(Global::_PRESENT[Global::_CPRESENT]->slides[slide].image).is_relative())
+            {
+                std::string tmp;
+                tmp = Global::_INPATH + Global::_PRESENT[Global::_CPRESENT]->slides[slide].image;
+                Global::_PRESENT[Global::_CPRESENT]->slides[slide].image = tmp;
+            }
+
             image = IMG_Load(Global::_PRESENT[Global::_CPRESENT]->slides[slide].image.c_str());
             if (image == NULL) gprintf("[ERROR]: Rendering Image: %s\n", SDL_GetError());
             else

@@ -95,6 +95,11 @@ void guiMain::OnCreateBtnClicked(wxCommandEvent &evt)
   else if(outputPathBox->GetValue() == wxEmptyString) wxMessageBox(wxT("Please specify an output file and try again"), wxT("No output file specified"), wxICON_WARNING);
   else
   {
+    Global::_INPATH = inputPathBox->GetValue();
+    int lastDirSep = Global::_INPATH.find_last_of("/\\");
+    std::string tmp = Global::_INPATH.substr(0, lastDirSep + 1);
+    Global::_INPATH = tmp;
+
     createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
     terminal->SetDefaultStyle(wxTextAttr(*wxGREEN));
     gprintf("You may now close this application\n");

@@ -17,6 +17,7 @@ struct Global
 
     static bool useGUI;
     static guiApp* gApp;
+    static std::string _INPATH;
 
     static std::vector<Presentation*> _PRESENT;
     static int _CPRESENT;

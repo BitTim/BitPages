@@ -27,6 +27,7 @@ std::string Global::_DEFAULTBACKGROUND = "";
 
 bool Global::useGUI = false;
 guiApp* Global::gApp = nullptr;
+std::string Global::_INPATH = "";
 
 std::string Global::_STATUS = "Ready";
 int Global::_MAXPROGRESS = 7;
@@ -49,6 +50,12 @@ int main(int argc, char* argv[])
 	else
 	{
 		inpath = argv[1];
+    int lastDirSep = inpath.find_last_of("/\\");
+    std::string tmp = inpath.substr(0, lastDirSep + 1);
+    inpath = tmp;
+
+		Global::_INPATH = inpath;
+
 		if (argc == 3) outpath = argv[2];
 		else outpath = "presentation.pdf";
 	}

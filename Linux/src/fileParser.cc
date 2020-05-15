@@ -2,6 +2,9 @@
 #include <vector>
 #include <fstream>
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 #include "lib/fileParser.hh"
 #include "lib/objects.hh"
 #include "lib/gui.hh"
@@ -89,6 +92,14 @@ void parse(std::vector<std::string> tokens)
 		{
 			i += 1;
 			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') gprintf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
+			
+			if(fs::path(tokens[i]).is_relative())
+      {
+        std::string tmp;
+        tmp = Global::_INPATH + tokens[i];
+        tokens[i] = tmp;
+      }
+			
 			Global::_FONT = { {"title", TTF_OpenFont(tokens[i].c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].c_str(), 34)} };
 			if (Global::_FONT["title"] == NULL || Global::_FONT["subtitle"] == NULL || Global::_FONT["normal"] == NULL)
 			{

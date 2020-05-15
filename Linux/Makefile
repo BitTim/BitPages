@@ -3,7 +3,7 @@ vpath %.cc src
 PRODUCT := bitPresent
 
 CXX := g++
-CXXFLAGS := -c -g `wx-config-gtk3 --cxxflags`
+CXXFLAGS := -c -std=c++17 `wx-config-gtk3 --cxxflags`
 CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs`
 CXXINCDIRS := -I.
 
