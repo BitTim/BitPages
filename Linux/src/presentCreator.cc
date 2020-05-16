@@ -44,7 +44,7 @@ int createPresent(std::string inpath, std::string outpath)
 		SDL_Surface* surface = generateSurface(i);
 		if (surface == nullptr) return -1;
 
-		saveImage(surface, ".cache/" + std::to_string(i) + ".png");
+		saveImage(surface, Global::_CACHEPATH.string() + std::to_string(i) + ".png");
 		SDL_FreeSurface(surface);
 	}
 

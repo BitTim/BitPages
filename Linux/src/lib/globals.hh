@@ -2,9 +2,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <map>
 #include <string>
+#include <filesystem>
 
 #include "objects.hh"
 #include "gui.hh"
+
+namespace fs = std::filesystem;
 
 struct Global
 {
@@ -17,6 +20,7 @@ struct Global
 
     static bool useGUI;
     static guiApp* gApp;
+    static fs::path _CACHEPATH;
     static std::string _INPATH;
 
     static std::vector<Presentation*> _PRESENT;

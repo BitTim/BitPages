@@ -32,8 +32,8 @@
 *.app
 
 # Cached files
-.makeCache
-.cache/*
+.cache/
+.cache/src/
 build
 
 # Binaries

@@ -6,7 +6,7 @@
 #include "lib/gui.hh"
 
 //Initialize all global variables
-std::string Global::_VERSIONSTRING = "BitPresent v1.2.2";
+std::string Global::_VERSIONSTRING = "BitPresent v1.2.3";
 
 int Global::_WIDTH = 1920;
 int Global::_HEIGHT = 1080;
@@ -28,6 +28,8 @@ std::string Global::_DEFAULTBACKGROUND = "";
 bool Global::useGUI = false;
 guiApp* Global::gApp = nullptr;
 std::string Global::_INPATH = "";
+fs::path Global::_CACHEPATH = fs::temp_directory_path();
+
 
 std::string Global::_STATUS = "Ready";
 int Global::_MAXPROGRESS = 7;
@@ -59,6 +61,10 @@ int main(int argc, char* argv[])
 		if (argc == 3) outpath = argv[2];
 		else outpath = "presentation.pdf";
 	}
+
+	//Create Foled in /tmp
+	fs::create_directory(Global::_CACHEPATH / "BitPresent");
+	Global::_CACHEPATH = Global::_CACHEPATH / "BitPresent" / "";
 
 	//Initialize SDL for future Ops
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -92,6 +98,10 @@ int main(int argc, char* argv[])
 		wxEntryCleanup();
 	}
 	else if(createPresent(inpath, outpath) == -1) return -1;
+
+	//Clear /tmp folder
+	fs::remove_all(Global::_CACHEPATH);
+	fs::remove(Global::_CACHEPATH);
 
 	//Clear Fonts
 	TTF_CloseFont(Global::_FONT["title"]);

@@ -40,7 +40,7 @@ int createPDF(std::string outpath)
     HPDF_Page_SetWidth(pages[i], Global::_WIDTH);
     HPDF_Page_SetHeight(pages[i], Global::_HEIGHT);
 
-    HPDF_Image slide = HPDF_LoadPngImageFromFile2(pdf, (".cache/" + std::to_string(i) + ".png").c_str());
+    HPDF_Image slide = HPDF_LoadPngImageFromFile2(pdf, (Global::_CACHEPATH.string() + std::to_string(i) + ".png").c_str());
     HPDF_Page_DrawImage(pages[i], slide, 0, 0, HPDF_Image_GetWidth(slide), HPDF_Image_GetHeight(slide));
   }
 
