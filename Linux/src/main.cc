@@ -6,7 +6,7 @@
 #include "lib/gui.hh"
 
 //Initialize all global variables
-std::string Global::_VERSIONSTRING = "BitPresent v1.2.0";
+std::string Global::_VERSIONSTRING = "BitPresent v1.2.2";
 
 int Global::_WIDTH = 1920;
 int Global::_HEIGHT = 1080;

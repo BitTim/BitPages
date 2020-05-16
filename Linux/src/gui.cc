@@ -120,7 +120,24 @@ void gprintf(std::string format, ...)
   printf("%s", tmp.c_str());
   if(Global::useGUI)
   {
-    Global::gApp->mainFrame->terminal->AppendText(tmp);
+    if(tmp[0] == '[')
+    {
+      int tagEnd = tmp.find_first_of("]");
+
+      if(tagEnd != std::string::npos)
+      {
+        std::string tag = tmp.substr(0, tagEnd + 1);
+        std::string text = tmp.substr(tagEnd + 1, std::string::npos);
+
+        if(tag == "[ERROR]") Global::gApp->mainFrame->terminal->SetDefaultStyle(wxTextAttr(*wxRED));
+        if(tag == "[OK]" || tag == "[FINISHED]") Global::gApp->mainFrame->terminal->SetDefaultStyle(wxTextAttr(*wxGREEN));
+
+        Global::gApp->mainFrame->terminal->AppendText(tag);
+        Global::gApp->mainFrame->terminal->SetDefaultStyle(wxTextAttr(*wxLIGHT_GREY));
+        Global::gApp->mainFrame->terminal->AppendText(text);
+      }
+    }
+    else Global::gApp->mainFrame->terminal->AppendText(tmp);
     wxYield();
   }
 

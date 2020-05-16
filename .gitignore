@@ -32,19 +32,9 @@
 *.app
 
 # Cached files
-.cache
-<<<<<<< HEAD
-cache
+.makeCache
+.cache/*
 build
 
 # Binaries
 bitPresent
-
-# VSCode
-.vscode
-=======
-build
-
-# Binaries
-bitPresent
->>>>>>> gui
