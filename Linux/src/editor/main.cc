@@ -3,6 +3,8 @@
 #include "lib/globals.hh"
 #include "lib/gui.hh"
 
+#define EDITOR
+
 //Initialize all global variables
 std::string Global::_VERSIONSTRING = "BitPresentEditor v1.0.0";
 
@@ -15,6 +17,12 @@ Presentation* Global::_PRESENT;
 int Global::_CPRESENT = -1;
 int Global::_CSLIDE = -1;
 int Global::_CPOINT = -1;
+
+bool Global::useGUI = true;
+
+bool Global::_SAVED = true;
+std::string Global::_SAVEPATH = "";
+std::string Global::_EXPORTPATH = "";
 
 std::map<std::string, TTF_Font*> Global::_FONT;
 std::map<std::string, TTF_Font*> Global::_DEFAULTFONT;

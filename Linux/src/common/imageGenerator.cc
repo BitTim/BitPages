@@ -1,11 +1,16 @@
-#include "../common/lib/imageGenerator.hh"
+#include "lib/imageGenerator.hh"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "../common/lib/objects.hh"
-#include "lib/globals.hh"
-#include "lib/gui.hh"
+#include "lib/objects.hh"
+#ifdef EDITOR
+    #include "../editor/lib/globals.hh"
+    #include "../editor/lib/gui.hh"
+#else
+    #include "../compiler/lib/globals.hh"
+    #include "../compiler/lib/gui.hh"
+#endif
 
 SDL_Surface* generateSurface(int slide)
 {

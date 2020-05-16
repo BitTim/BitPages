@@ -13,6 +13,10 @@ struct Global
 {
     static std::string _VERSIONSTRING;
 
+    static bool _SAVED;
+    static std::string _SAVEPATH;
+    static std::string _EXPORTPATH;
+
     static int _WIDTH;
     static int _HEIGHT;
     static int _BORDERS;

@@ -1,15 +1,27 @@
 #include "../common/lib/presentCreator.hh"
 
-#include "lib/globals.hh"
-#include "../common/lib/fileParser.hh"
+#ifdef EDITOR
+    #include "../editor/lib/globals.hh"
+    #include "../editor/lib/gui.hh"
+		#include "../editor/lib/parser.hh"
+#else
+    #include "../compiler/lib/globals.hh"
+    #include "../compiler/lib/gui.hh"
+		#include "../compiler/lib/fileParser.hh"
+#endif
+
 #include "../common/lib/imageGenerator.hh"
 #include "../common/lib/pdfCreator.hh"
-#include "lib/gui.hh"
 
 int createPresent(std::string inpath, std::string outpath)
 {
   printf("%s\n", Global::_VERSIONSTRING.c_str());
-	changeStatus("Parsing");
+	if(Global::useGUI)
+	{
+		resetProgress();
+		clearTerminal();
+		changeStatus("Parsing");
+	}
   
   //Split input file into tokens
 	std::vector<std::string> tokens = tokenize(inpath);
@@ -26,8 +38,11 @@ int createPresent(std::string inpath, std::string outpath)
 	//Parse tokens to global Presentation object
 	parse(tokens);
 	gprintf("[OK]: Finished Parsing\n");
-	changeStatus("Creating Images");
-	progress();
+	if(Global::useGUI)
+	{
+		changeStatus("Creating Images");
+		progress();
+	}
 	tokens.clear();
 
 	//Generate images for each Slide
@@ -41,13 +56,16 @@ int createPresent(std::string inpath, std::string outpath)
 	}
 
 	gprintf("[OK]: Created all Images\n");
-	changeStatus("Generating PDF");
-	progress();
+	if(Global::useGUI)
+	{
+		changeStatus("Generating PDF");
+		progress();
+	}
 
 	//Create PDF
 	createPDF(outpath);
 	gprintf("[OK]: Created PDF file\n");
-	changeStatus("Finished");
+	if(Global::useGUI) changeStatus("Finished");
 
 	//Cleanup
 	Global::_PRESENT->clean();

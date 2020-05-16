@@ -2,8 +2,14 @@
 
 #include <iostream>
 #include <vector>
-#include "lib/globals.hh"
-#include "lib/gui.hh"
+
+#ifdef EDITOR
+    #include "../editor/lib/globals.hh"
+    #include "../editor/lib/gui.hh"
+#else
+    #include "../compiler/lib/globals.hh"
+    #include "../compiler/lib/gui.hh"
+#endif
 
 void errorHandler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
 {
@@ -20,12 +26,12 @@ int createPDF(std::string outpath)
     return -1;
   }
 
-  progress();
+  if(Global::useGUI) progress();
 
   HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);
   HPDF_SetPageMode(pdf, HPDF_PAGE_MODE_FULL_SCREEN);
 
-  progress();
+  if(Global::useGUI) progress();
 
   std::vector<HPDF_Page> pages;
   for(int i = 0; i < Global::_PRESENT->slides.size(); i++)
@@ -44,11 +50,11 @@ int createPDF(std::string outpath)
     HPDF_Page_DrawImage(pages[i], slide, 0, 0, HPDF_Image_GetWidth(slide), HPDF_Image_GetHeight(slide));
   }
 
-  progress();
+  if(Global::useGUI) progress();
 
   HPDF_SaveToFile(pdf, outpath.c_str());
   HPDF_Free(pdf);
 
-  progress();
+  if(Global::useGUI) progress();
   return 0;
 }
