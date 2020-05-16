@@ -1,6 +1,6 @@
 #include "lib/gui.hh"
 #include "lib/globals.hh"
-#include "lib/presentCreator.hh"
+#include "../common/lib/presentCreator.hh"
 
 wxBEGIN_EVENT_TABLE(guiMain, wxFrame)
   EVT_BUTTON(10001, guiMain::OnInBtnClicked)

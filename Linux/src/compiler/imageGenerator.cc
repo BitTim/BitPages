@@ -1,9 +1,9 @@
-#include "lib/imageGenerator.hh"
+#include "../common/lib/imageGenerator.hh"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "lib/objects.hh"
+#include "../common/lib/objects.hh"
 #include "lib/globals.hh"
 #include "lib/gui.hh"
 
@@ -33,10 +33,10 @@ SDL_Surface* generateSurface(int slide)
     SDL_Rect dst;
 
     //Draw Content
-    if (Global::_PRESENT[Global::_CPRESENT]->slides[slide].titleSlide)
+    if (Global::_PRESENT->slides[slide].titleSlide)
     {
         //Title
-        text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
+        text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
         if (text == NULL) gprintf("[ERROR]: Rendering Title: %s\n", TTF_GetError());
         else
         {
@@ -46,9 +46,9 @@ SDL_Surface* generateSurface(int slide)
         }
 
         //Subtitle
-        if (Global::_PRESENT[Global::_CPRESENT]->slides[slide].subtitle.length() > 0)
+        if (Global::_PRESENT->slides[slide].subtitle.length() > 0)
         {
-            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
+            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
             if (text == NULL) gprintf("[ERROR]: Rendering Subtitle: %s\n", TTF_GetError());
             else
             {
@@ -59,7 +59,7 @@ SDL_Surface* generateSurface(int slide)
         }
 
         //Render "Created with BitPresent"
-        if (slide == Global::_PRESENT[Global::_CPRESENT]->slides.size() - 1)
+        if (slide == Global::_PRESENT->slides.size() - 1)
         {
             text = TTF_RenderUTF8_Blended(Global::_FONT["footer"], "Created with BitPresent", *Global::_TEXTCOLOR);
             if (text == NULL) gprintf("[ERROR]: Rendering Footer: %s\n", TTF_GetError());
@@ -74,7 +74,7 @@ SDL_Surface* generateSurface(int slide)
     else
     {
         //Title
-        text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
+        text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["title"], Global::_PRESENT->slides[slide].title.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
         if (text == NULL) gprintf("[ERROR]: Rendering Title: %s\n", TTF_GetError());
         else
         {
@@ -84,9 +84,9 @@ SDL_Surface* generateSurface(int slide)
         }
 
         //Subtitle
-        if (Global::_PRESENT[Global::_CPRESENT]->slides[slide].subtitle.length() > 0)
+        if (Global::_PRESENT->slides[slide].subtitle.length() > 0)
         {
-            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
+            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["subtitle"], Global::_PRESENT->slides[slide].subtitle.c_str(), *Global::_TEXTCOLOR, Global::_WIDTH - 2 * Global::_BORDERS);
             if (text == NULL) gprintf("[ERROR]: Rendering Subtitle: %s\n", TTF_GetError());
             else
             {
@@ -100,16 +100,16 @@ SDL_Surface* generateSurface(int slide)
         int contentHeight = dst.y + dst.h * 2;
         int imgPosX = Global::_WIDTH;
 
-        if (Global::_PRESENT[Global::_CPRESENT]->slides[slide].image != "none")
+        if (Global::_PRESENT->slides[slide].image != "none")
         {
-            if(fs::path(Global::_PRESENT[Global::_CPRESENT]->slides[slide].image).is_relative())
+            if(fs::path(Global::_PRESENT->slides[slide].image).is_relative())
             {
                 std::string tmp;
-                tmp = Global::_INPATH + Global::_PRESENT[Global::_CPRESENT]->slides[slide].image;
-                Global::_PRESENT[Global::_CPRESENT]->slides[slide].image = tmp;
+                tmp = Global::_INPATH + Global::_PRESENT->slides[slide].image;
+                Global::_PRESENT->slides[slide].image = tmp;
             }
 
-            image = IMG_Load(Global::_PRESENT[Global::_CPRESENT]->slides[slide].image.c_str());
+            image = IMG_Load(Global::_PRESENT->slides[slide].image.c_str());
             if (image == NULL) gprintf("[ERROR]: Rendering Image: %s\n", SDL_GetError());
             else
             {
@@ -136,7 +136,7 @@ SDL_Surface* generateSurface(int slide)
         }
 
         //Points
-        for (int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides[slide].points.size(); i++)
+        for (int i = 0; i < Global::_PRESENT->slides[slide].points.size(); i++)
         {
             //Render Dashes
             text = TTF_RenderUTF8_Blended(Global::_FONT["normal"], "- ", *Global::_TEXTCOLOR);
@@ -149,7 +149,7 @@ SDL_Surface* generateSurface(int slide)
             }
 
             //Render Text
-            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["normal"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].points[i].text.c_str(), *Global::_TEXTCOLOR, imgPosX - 2 * Global::_BORDERS - dst.x);
+            text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["normal"], Global::_PRESENT->slides[slide].points[i].text.c_str(), *Global::_TEXTCOLOR, imgPosX - 2 * Global::_BORDERS - dst.x);
             if (text == NULL) gprintf("[ERROR]: Rendering Points: %s\n", TTF_GetError());
             else
             {
@@ -160,7 +160,7 @@ SDL_Surface* generateSurface(int slide)
             }
 
             //Render Subpoints
-            for(int j = 0; j < Global::_PRESENT[Global::_CPRESENT]->slides[slide].points[i].subPoints.size(); j++)
+            for(int j = 0; j < Global::_PRESENT->slides[slide].points[i].subPoints.size(); j++)
             {
                 //Render Dots
                 text = TTF_RenderUTF8_Blended(Global::_FONT["normal"], "> ", *Global::_TEXTCOLOR);
@@ -173,7 +173,7 @@ SDL_Surface* generateSurface(int slide)
                 }
 
                 //Render Text
-                text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["normal"], Global::_PRESENT[Global::_CPRESENT]->slides[slide].points[i].subPoints[j].c_str(), *Global::_TEXTCOLOR, imgPosX - 2 * Global::_BORDERS - dst.x);
+                text = TTF_RenderUTF8_Blended_Wrapped(Global::_FONT["normal"], Global::_PRESENT->slides[slide].points[i].subPoints[j].c_str(), *Global::_TEXTCOLOR, imgPosX - 2 * Global::_BORDERS - dst.x);
                 if (text == NULL) gprintf("[ERROR]: Rendering Points: %s\n", TTF_GetError());
                 else
                 {
@@ -186,7 +186,7 @@ SDL_Surface* generateSurface(int slide)
         }
 
         //Render "Created with BitPresent"
-        if (slide == Global::_PRESENT[Global::_CPRESENT]->slides.size() - 1)
+        if (slide == Global::_PRESENT->slides.size() - 1)
         {
             text = TTF_RenderUTF8_Blended(Global::_FONT["footer"], "Created with BitPresent", *Global::_TEXTCOLOR);
             if (text == NULL) gprintf("[ERROR]: Rendering Footer: %s\n", TTF_GetError());

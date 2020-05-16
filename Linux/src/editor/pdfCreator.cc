@@ -1,4 +1,4 @@
-#include "lib/pdfCreator.hh"
+#include "../common/lib/pdfCreator.hh"
 
 #include <iostream>
 #include <vector>
@@ -20,15 +20,15 @@ int createPDF(std::string outpath)
     return -1;
   }
 
-  if(Global::useGUI) progress();
+  progress();
 
   HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);
   HPDF_SetPageMode(pdf, HPDF_PAGE_MODE_FULL_SCREEN);
 
-  if(Global::useGUI) progress();
+  progress();
 
   std::vector<HPDF_Page> pages;
-  for(int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides.size(); i++)
+  for(int i = 0; i < Global::_PRESENT->slides.size(); i++)
   {
     pages.push_back(HPDF_AddPage(pdf));
     if (pages[i] == nullptr)
@@ -44,11 +44,11 @@ int createPDF(std::string outpath)
     HPDF_Page_DrawImage(pages[i], slide, 0, 0, HPDF_Image_GetWidth(slide), HPDF_Image_GetHeight(slide));
   }
 
-  if(Global::useGUI) progress();
+  progress();
 
   HPDF_SaveToFile(pdf, outpath.c_str());
   HPDF_Free(pdf);
 
-  if(Global::useGUI) progress();
+  progress();
   return 0;
 }

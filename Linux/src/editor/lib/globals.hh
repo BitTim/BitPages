@@ -4,7 +4,7 @@
 #include <string>
 #include <filesystem>
 
-#include "objects.hh"
+#include "../../common/lib/objects.hh"
 #include "gui.hh"
 
 namespace fs = std::filesystem;
@@ -19,11 +19,11 @@ struct Global
     static int _INDENT;
 
     static bool useGUI;
-    static guiApp* gApp;
+    static EditorGUIApp* gApp;
     static fs::path _CACHEPATH;
     static std::string _INPATH;
 
-    static std::vector<Presentation*> _PRESENT;
+    static Presentation* _PRESENT;
     static int _CPRESENT;
     static int _CSLIDE;
     static int _CPOINT;
