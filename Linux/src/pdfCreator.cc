@@ -31,6 +31,12 @@ int createPDF(std::string outpath)
   for(int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides.size(); i++)
   {
     pages.push_back(HPDF_AddPage(pdf));
+    if (pages[i] == nullptr)
+    {
+      gprintf("[ERROR]: Failed to create page for PDF\n");
+      return -1;
+    }
+
     HPDF_Page_SetWidth(pages[i], Global::_WIDTH);
     HPDF_Page_SetHeight(pages[i], Global::_HEIGHT);
 

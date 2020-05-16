@@ -62,6 +62,8 @@ int createPresent(std::string inpath, std::string outpath)
 
 	//Cleanup
 	Global::_PRESENT[Global::_CPRESENT]->clean();
+	Global::_CSLIDE = -1;
+	Global::_CPOINT = -1;
 
 	gprintf("[FINISHED]: Done creating presentation\n");
 	return 0;

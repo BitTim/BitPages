@@ -102,14 +102,6 @@ void guiMain::OnCreateBtnClicked(wxCommandEvent& evt)
 
         createPresent((std::string) inputPathBox->GetValue(), (std::string) outputPathBox->GetValue());
         progressBar->SetValue(Global::_MAXPROGRESS);
-        terminal->SetDefaultStyle(wxTextAttr(*wxGREEN));
-        gprintf("You may now close this application\n");
-
-        inputPathBox->Enable(false);
-        outputPathBox->Enable(false);
-        inputBrowseBtn->Enable(false);
-        outputBrowseBtn->Enable(false);
-        createBtn->Enable(false);
     }
     evt.Skip();
 }
