@@ -49,6 +49,8 @@ public:
 
   void save();
   void saveAs();
+  void exportPDF();
+  void exportPDFAs();
   bool checkSaved();
 
   void onNewClicked(wxCommandEvent &evt);

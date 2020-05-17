@@ -44,14 +44,12 @@ struct Slide
 
 struct Presentation
 {
+	Presentation();
+
 	std::vector<Slide> slides;
 	std::string background;
 	SDL_Color* textcolor;
 	std::map<std::string, TTF_Font*> font;
 
-	void clean()
-	{
-		for(int i = 0; i < slides.size(); i++) slides[i].clean();
-		slides.clear();
-	}
+	void clean();
 };

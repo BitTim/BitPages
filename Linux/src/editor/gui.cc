@@ -4,6 +4,7 @@
 #include "lib/globals.hh"
 #include "lib/parser.hh"
 #include "lib/imageGenerator.hh"
+#include "lib/presentCreator.hh"
 
 wxBEGIN_EVENT_TABLE(EditorGUIMain, wxFrame)
   EVT_CLOSE(EditorGUIMain::OnClose)
@@ -265,6 +266,24 @@ void EditorGUIMain::saveAs()
 
     textEdit->SaveFile(Global::_SAVEPATH);
     Global::_SAVED = true;
+  }
+}
+
+void EditorGUIMain::exportPDF()
+{
+  if(Global::_SAVEPATH == "") exportPDFAs();
+  else
+  {
+    //createPresent();
+  }
+}
+
+void EditorGUIMain::exportPDFAs()
+{
+  if(saveFileDialog->ShowModal() != wxID_CANCEL)
+  {
+    Global::_EXPORTPATH = saveFileDialog->GetPath();
+
   }
 }
 
