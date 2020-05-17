@@ -1,6 +1,6 @@
 #include "lib/gui.hh"
 #include "lib/globals.hh"
-#include "../common/lib/presentCreator.hh"
+#include "lib/presentCreator.hh"
 
 wxBEGIN_EVENT_TABLE(guiMain, wxFrame)
   EVT_BUTTON(10001, guiMain::OnInBtnClicked)
@@ -19,7 +19,7 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
   pngHandler = new wxPNGHandler();
   wxImage tmp;
 
-  wxFileInputStream bpInStream("dat/BPLogo.png");
+  wxFileInputStream bpInStream("dat/BPLogo_Compiler.png");
   pngHandler->LoadFile(&tmp, bpInStream);
   bplogo = new wxStaticBitmap(this, wxID_ANY, wxBitmap(tmp), wxPoint(510, 10), wxSize(50, 50));
 
@@ -58,6 +58,10 @@ guiMain::guiMain() : wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(64
 
   openFileDialog = new wxFileDialog(this, _("Select an input file"), wxEmptyString, wxEmptyString, "Text files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
   saveFileDialog = new wxFileDialog(this, _("Select an output file"), wxEmptyString, "Presentation.pdf", "PDF Documents (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+  wxIcon icon;
+  icon.LoadFile("dat/BPLogo_Compiler.png", wxBITMAP_TYPE_PNG);
+  SetIcons(icon);
 }
 
 bool guiApp::OnInit()

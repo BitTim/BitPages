@@ -4,13 +4,8 @@
 namespace fs = std::filesystem;
 
 #include "lib/objects.hh"
-#ifdef EDITOR
-    #include "../editor/lib/globals.hh"
-    #include "../editor/lib/gui.hh"
-#else
-    #include "../compiler/lib/globals.hh"
-    #include "../compiler/lib/gui.hh"
-#endif
+#include "lib/globals.hh"
+#include "lib/gui.hh"
 
 SDL_Surface* generateSurface(int slide)
 {

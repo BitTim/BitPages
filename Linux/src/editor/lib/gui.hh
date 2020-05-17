@@ -15,19 +15,41 @@ public:
   wxMenu* fileMenu;
   wxMenu* insertMenu;
 
+  wxPNGHandler* pngHandler;
+
   wxBoxSizer* boxSizer;
   wxTextCtrl* textEdit;
-  wxStaticBitmap* preview;
+  wxStaticBitmap* previewImage;
+  wxImage previewImageData;
+  
+  wxBoxSizer* preview;
+  wxTextCtrl* warnings;
 
   wxFileDialog* openFileDialog;
   wxFileDialog* saveFileDialog;
   wxFileDialog* exportFileDialog;
 
   wxMessageDialog* notSaved;
+  wxMessageDialog* error;
 
-  virtual void OnClose(wxCloseEvent &evt);
+  wxTimer* idle;
+  wxTimer* cursor;
+
+  long prevCursorPos;
+
+  void loadPreview();
+  void update();
+  void previewUpdate();
+  void timedUpdate(wxTimerEvent &evt);
+  void cursorUpdate(wxMouseEvent &evt);
+  void timedCursorUpdate(wxTimerEvent &evt);
+
+  void OnClose(wxCloseEvent &evt);
+  void resizing(wxSizeEvent &evt);
+
   void save();
   void saveAs();
+  bool checkSaved();
 
   void onNewClicked(wxCommandEvent &evt);
   void onOpenClicked(wxCommandEvent &evt);
@@ -54,7 +76,7 @@ public:
 class EditorGUIApp : public wxApp
 {
 public:
-  virtual bool OnInit();
+  bool OnInit();
   EditorGUIMain* mainFrame = nullptr;
 };
 

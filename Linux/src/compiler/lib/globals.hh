@@ -4,7 +4,7 @@
 #include <string>
 #include <filesystem>
 
-#include "../../common/lib/objects.hh"
+#include "objects.hh"
 #include "gui.hh"
 
 namespace fs = std::filesystem;

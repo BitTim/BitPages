@@ -4,7 +4,8 @@
 #include <string>
 #include <filesystem>
 
-#include "../../common/lib/objects.hh"
+#include "objects.hh"
+#include "parser.hh"
 #include "gui.hh"
 
 namespace fs = std::filesystem;
@@ -25,21 +26,18 @@ struct Global
     static bool useGUI;
     static EditorGUIApp* gApp;
     static fs::path _CACHEPATH;
-    static std::string _INPATH;
 
     static Presentation* _PRESENT;
     static int _CPRESENT;
     static int _CSLIDE;
     static int _CPOINT;
+    static int _PREVSLIDEPREVIEW;
+    static int _CSLIDEPREVIEW;
+    static bool _FORCEUPDATE;
 
-    static std::map<std::string, TTF_Font*> _FONT;
     static std::map<std::string, TTF_Font*> _DEFAULTFONT;
-    static SDL_Color* _TEXTCOLOR;
     static SDL_Color* _DEFAULTTEXTCOLOR;
-    static std::string _BACKGROUND;
     static std::string _DEFAULTBACKGROUND;
 
-    static std::string _STATUS;
-    static int _MAXPROGRESS;
-    static int _PROGRESS;
+    static std::vector<ErrorHighlight> _ERRORS;
 };

@@ -6,7 +6,7 @@
 namespace fs = std::filesystem;
 
 #include "lib/fileParser.hh"
-#include "../common/lib/objects.hh"
+#include "lib/objects.hh"
 #include "lib/gui.hh"
 #include "lib/globals.hh"
 

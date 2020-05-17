@@ -2,7 +2,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "lib/globals.hh"
-#include "../common/lib/presentCreator.hh"
+#include "lib/presentCreator.hh"
 #include "lib/gui.hh"
 
 //Initialize all global variables

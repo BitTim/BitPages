@@ -1,15 +1,10 @@
-#include "../common/lib/pdfCreator.hh"
+#include "lib/pdfCreator.hh"
 
 #include <iostream>
 #include <vector>
 
-#ifdef EDITOR
-    #include "../editor/lib/globals.hh"
-    #include "../editor/lib/gui.hh"
-#else
-    #include "../compiler/lib/globals.hh"
-    #include "../compiler/lib/gui.hh"
-#endif
+#include "../compiler/lib/globals.hh"
+#include "../compiler/lib/gui.hh"
 
 void errorHandler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
 {

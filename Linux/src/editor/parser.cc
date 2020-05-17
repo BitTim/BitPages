@@ -1,29 +1,41 @@
 #include <algorithm>
 #include <vector>
-#include <fstream>
+#include <sstream>
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
 #include "lib/parser.hh"
-#include "../common/lib/objects.hh"
+#include "lib/objects.hh"
 #include "lib/gui.hh"
 #include "lib/globals.hh"
 
 int nDotWarn = 0;
 
-std::vector<std::string> tokenize(std::string path)
+ErrorHighlight::ErrorHighlight(int type, int line, std::string desc)
 {
-	std::vector<std::string> tokens;
+	this->type = type;
+	this->line = line;
+	this->desc = desc;
+}
 
-	std::ifstream file(path.c_str());
-	if (file.fail()) return tokens;
+std::vector<Token> tokenize(std::string input)
+{
+	Global::_ERRORS.clear();
+	Global::_PRESENT->clean();
+	Global::_CSLIDE = -1;
+	Global::_CPOINT = -1;
+	
+	std::vector<Token> tokens;
+
+	std::stringstream in(input);
+	if (in.fail()) return tokens;
 
 	std::string line;
 	std::string buffer;
 	int cline = 0;
 
-	while (std::getline(file, line))
+	while (std::getline(in, line))
 	{
 		cline += 1;
 		if (line[0] == '.')
@@ -31,35 +43,32 @@ std::vector<std::string> tokenize(std::string path)
 			int index = line.find(" ");
 			if (index == std::string::npos)
 			{
-				gprintf("[WARNING](Line %d): Invalid '.' command statement. Ignoring\n", cline);
+				Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Invalid '.' command statement"));
 				nDotWarn++;
 				continue;
 			}
 			else
 			{
-				tokens.push_back(line.substr(0, index));
-				tokens.push_back(line.substr(index + 1, line.length() - 1));
+				tokens.push_back(Token(line.substr(0, index), true));
+				tokens.push_back(Token(line.substr(index + 1, line.length() - 1)));
 			}
 		}
 		else
 		{
-			tokens.push_back(line);
+			tokens.push_back(Token(line));
 		}
 	}
 
-	progress();
-
-	file.close();
 	return tokens;
 }
 
-void parse(std::vector<std::string> tokens)
+void parse(std::vector<Token> tokens, int cursorLine)
 {
 	int cline = nDotWarn;
 
 	if(Global::_PRESENT == nullptr)
 	{
-		gprintf("[ERROR]: Presentation object does not exist\n");
+		Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, 0, "Presentation object does not exist"));
 		return;
 	}
 
@@ -68,64 +77,67 @@ void parse(std::vector<std::string> tokens)
 		cline += 1;
 
 		//Skip empty tokens
-		if (tokens[i] == "") continue;
+		if (tokens[i].value == "") continue;
 
 		//Check for commands
-		if (tokens[i] == ".background")
+		if (tokens[i].value == ".background")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') gprintf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.background'\n", cline, tokens[i].c_str());
-			Global::_BACKGROUND = tokens[i];
-			continue;
+			if (tokens[i].value[0] == '<' || tokens[i].value[0] == '[' || tokens[i].value[0] == '-') Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Using instruction as argument"));
+			Global::_PRESENT->background = tokens[i].value;
 		}
 
-		if (tokens[i] == ".image")
+		else if (tokens[i].value == ".image")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') gprintf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
-			if (Global::_CSLIDE < 0) gprintf("[WARNING]: '.image' used outside of a slide. Ignoring...\n");
-			else Global::_PRESENT->slides[Global::_CSLIDE].image = tokens[i];
-			continue;
+			if (tokens[i].value[0] == '<' || tokens[i].value[0] == '[' || tokens[i].value[0] == '-') Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Using instruction as argument"));
+			if (Global::_CSLIDE < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined image outside of a slide"));
+			else Global::_PRESENT->slides[Global::_CSLIDE].image = tokens[i].value;
 		}
 
-		if (tokens[i] == ".font")
+		else if (tokens[i].value == ".font")
 		{
 			i += 1;
-			if (tokens[i][0] == '<' || tokens[i][0] == '[' || tokens[i][0] == '-') gprintf("[WARNING](Line %d): Using instruction(\"%s\") as argument for '.image'\n", cline, tokens[i].c_str());
+			if (tokens[i].value[0] == '<' || tokens[i].value[0] == '[' || tokens[i].value[0] == '-') Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Using instruction as argument"));
 			
-			if(fs::path(tokens[i]).is_relative())
+			if(fs::path(tokens[i].value).is_relative())
       {
         std::string tmp;
-        tmp = Global::_INPATH + tokens[i];
-        tokens[i] = tmp;
+        int fnsep = Global::_SAVEPATH.find_last_of("/\\");
+
+        tmp = Global::_SAVEPATH.substr(0, fnsep + 1) + tokens[i].value;
+        tokens[i].value = tmp;
       }
 			
-			Global::_FONT = { {"title", TTF_OpenFont(tokens[i].c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].c_str(), 34)} };
-			if (Global::_FONT["title"] == NULL || Global::_FONT["subtitle"] == NULL || Global::_FONT["normal"] == NULL)
+			Global::_PRESENT->font = { {"title", TTF_OpenFont(tokens[i].value.c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].value.c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].value.c_str(), 34)} };
+			if (Global::_PRESENT->font["title"] == NULL || Global::_PRESENT->font["subtitle"] == NULL || Global::_PRESENT->font["normal"] == NULL)
 			{
-				gprintf("[ERROR](Line %d): Error loading font. Reverting to default\n", cline);
-				Global::_FONT = Global::_DEFAULTFONT;
+				Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, cline, "Error loading font, reverting to default"));
+				Global::_PRESENT->font = Global::_DEFAULTFONT;
 			}
-			continue;
 		}
 
-		if (tokens[i] == ".color")
+		else if (tokens[i].value == ".color")
 		{
 			i += 1;
-			if (tokens[i] == "default") Global::_TEXTCOLOR = Global::_DEFAULTTEXTCOLOR;
+			if(tokens[i].value == "default") Global::_PRESENT->textcolor = Global::_DEFAULTTEXTCOLOR;
+			else if(tokens[i].value.find_first_not_of("0123456789abcdefABCDEF") == std::string::npos && tokens[i].value.length() == 6)
+			{
+				uint8_t r = std::stoi(tokens[i].value.substr(0, 2), nullptr, 16);
+				uint8_t g = std::stoi(tokens[i].value.substr(2, 2), nullptr, 16);
+				uint8_t b = std::stoi(tokens[i].value.substr(4, 2), nullptr, 16);
+
+				Global::_PRESENT->textcolor = new SDL_Color{ r, g, b };
+			}
 			else
 			{
-				uint8_t r = std::stoi(tokens[i].substr(0, 2), nullptr, 16);
-				uint8_t g = std::stoi(tokens[i].substr(2, 2), nullptr, 16);
-				uint8_t b = std::stoi(tokens[i].substr(4, 2), nullptr, 16);
-
-				Global::_TEXTCOLOR = new SDL_Color{ r, g, b };
+				Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, cline, "Invalid Color code. Reverting to default"));
+				Global::_PRESENT->textcolor = Global::_DEFAULTTEXTCOLOR;
 			}
-			continue;
 		}
 
 		//Check for other defining Tokens
-		if (tokens[i][0] == '<' && tokens[i][tokens[i].length() - 1] == '>')
+		else if (tokens[i].value[0] == '<' && tokens[i].value[tokens[i].value.length() - 1] == '>')
 		{
 			Global::_PRESENT->slides.push_back(Slide());
 			Global::_CSLIDE = Global::_CSLIDE + 1;
@@ -133,54 +145,56 @@ void parse(std::vector<std::string> tokens)
 
 			Global::_PRESENT->slides[Global::_CSLIDE].titleSlide = true;
 
-			std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+			std::string tmp = tokens[i].value.substr(1, tokens[i].value.length() - 2);
 			Global::_PRESENT->slides[Global::_CSLIDE].title = tmp;
-			continue;
 		}
 
-		if (tokens[i][0] == '[' && tokens[i][tokens[i].length() - 1] == ']')
+		else if (tokens[i].value[0] == '[' && tokens[i].value[tokens[i].value.length() - 1] == ']')
 		{
 			Global::_PRESENT->slides.push_back(Slide());
 			Global::_CSLIDE = Global::_CSLIDE + 1;
 			Global::_CPOINT = -1;
 
-			std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+			std::string tmp = tokens[i].value.substr(1, tokens[i].value.length() - 2);
 			Global::_PRESENT->slides[Global::_CSLIDE].title = tmp;
-			continue;
 		}
 
-		if (tokens[i][0] == '-' && tokens[i][tokens[i].length() - 1] == '-')
+		else if (tokens[i].value[0] == '-' && tokens[i].value[tokens[i].value.length() - 1] == '-')
 		{
-			if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined subtitle outside of a slide. Ignoring...\n", cline);
+			if (Global::_CSLIDE < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined subtitle outside of slide"));
 			else
 			{
-				std::string tmp = tokens[i].substr(1, tokens[i].length() - 2);
+				std::string tmp = tokens[i].value.substr(1, tokens[i].value.length() - 2);
 				Global::_PRESENT->slides[Global::_CSLIDE].subtitle = tmp;
 			}
-			continue;
 		}
 
-		if (tokens[i][0] == '*')
+		else if (tokens[i].value[0] == '*')
 		{
-			if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined subpoint outside of a slide. Ignoring...\n", cline);
-			else if (Global::_CPOINT < 0) gprintf("[WARNING](Line %d): Defined subpoint outside of a point. Ignoring...\n", cline);
+			if (Global::_CSLIDE < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined subpoint outside of slide"));
+			else if (Global::_CPOINT < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined subpoint outside of point"));
 			else
 			{
 				int cutoff = 1;
-				if (tokens[i][1] == ' ') cutoff = 2;
-				Global::_PRESENT->slides[Global::_CSLIDE].points[Global::_CPOINT].subPoints.push_back(tokens[i].substr(cutoff, tokens[i].length() - 1));
+				if (tokens[i].value[1] == ' ') cutoff = 2;
+				Global::_PRESENT->slides[Global::_CSLIDE].points[Global::_CPOINT].subPoints.push_back(tokens[i].value.substr(cutoff, tokens[i].value.length() - 1));
 			}
-			continue;
 		}
 
 		//Add non-special strings as points to slides
-		if (Global::_CSLIDE < 0) gprintf("[WARNING](Line %d): Defined point outside of a slide. Ignoring...\n", cline);
+		else if (Global::_CSLIDE < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined point outside of slide"));
 		else
 		{
-			Global::_PRESENT->slides[Global::_CSLIDE].points.push_back(Point(tokens[i]));
+			Global::_PRESENT->slides[Global::_CSLIDE].points.push_back(Point(tokens[i].value));
 			Global::_CPOINT = Global::_CPOINT + 1;
+		}
+
+		if(cursorLine == cline)
+		{
+			if(Global::_CSLIDE != -1) Global::_CSLIDEPREVIEW = Global::_CSLIDE;
+			else Global::_FORCEUPDATE = true;
 		}
 	}
 
-	tokens.clear();
+	nDotWarn = 0;
 }

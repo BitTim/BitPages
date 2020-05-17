@@ -1,17 +1,11 @@
-#include "../common/lib/presentCreator.hh"
+#include "lib/presentCreator.hh"
 
-#ifdef EDITOR
-    #include "../editor/lib/globals.hh"
-    #include "../editor/lib/gui.hh"
-		#include "../editor/lib/parser.hh"
-#else
-    #include "../compiler/lib/globals.hh"
-    #include "../compiler/lib/gui.hh"
-		#include "../compiler/lib/fileParser.hh"
-#endif
+#include "lib/globals.hh"
+#include "lib/gui.hh"
+#include "lib/fileParser.hh"
 
-#include "../common/lib/imageGenerator.hh"
-#include "../common/lib/pdfCreator.hh"
+#include "lib/imageGenerator.hh"
+#include "lib/pdfCreator.hh"
 
 int createPresent(std::string inpath, std::string outpath)
 {

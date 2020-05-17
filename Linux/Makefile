@@ -5,12 +5,8 @@ PRODUCT2 := BitPresentEditor
 
 CXX := g++
 CXXFLAGS := -c -std=c++17 `wx-config-gtk3 --cxxflags`
-CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs`
+CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs` 
 CXXINCDIRS := -I.
-
-COMMONSOURCE := $(shell find src/common/ -name *.cc)
-COMMONOBJECTS := $(patsubst %.cc,.cache/%.o,$(COMMONSOURCE))
-COMMONDEPFILES := $(patsubst %.cc,.cache/%.d,$(COMMONSOURCE))
 
 SOURCE := $(shell find src/compiler/ -name *.cc)
 OBJECTS := $(patsubst %.cc,.cache/%.o,$(SOURCE))
@@ -20,24 +16,13 @@ SOURCE2 := $(shell find src/editor/ -name *.cc)
 OBJECTS2 := $(patsubst %.cc,.cache/%.o,$(SOURCE2))
 DEPFILES2 := $(patsubst %.cc,.cache/%.d,$(SOURCE2))
 
-NUMOPS2 := $(shell echo $(COMMONOBJECTS) | wc -w)
 NUMOPS := $(shell echo $(OBJECTS) | wc -w)
 NUMOPS2 := $(shell echo $(OBJECTS2) | wc -w)
 OPS := 0
 
 all: $(PRODUCT) $(PRODUCT2)
 
-.cache/src/common/%.d: src/common/%.cc
-	$(eval OPS=$(shell echo $$(($(OPS)+1))))
-	@echo -e "\033[0;34m[$(OPS)/$(COMMONNUMOPS)]\033[0m Generating CXX dependency: \033[0;33m$@\033[0m"
-	@$(CXX) $(CXXINCDIRS) -MM $< > $@
-
-.cache/src/common/%.o: src/common/%.cc
-	$(eval OPS=$(shell echo $$(($(OPS)+1))))
-	@echo -e "\033[0;32m[$(OPS)/$(COMMONNUMOPS)]\033[0m Building CXX object: \033[0;33m$@\033[0m"
-	@$(CXX) $(CXXFLAGS) $(CXXINCDIRS) -o $@ $<
-
-$(PRODUCT): $(OBJECTS) $(COMMONOBJECTS)
+$(PRODUCT): $(OBJECTS)
 	$(eval OPS=$(shell echo $$(($(OPS)-$(OPS)))))
 	@echo -e "Linking CXX objects to: \033[0;33m$@\033[0m"
 	@$(CXX) $(CXXLIBS) $^ -o $@
@@ -52,10 +37,10 @@ $(PRODUCT): $(OBJECTS) $(COMMONOBJECTS)
 	@echo -e "\033[0;32m[$(OPS)/$(NUMOPS)]\033[0m Building CXX object: \033[0;33m$@\033[0m"
 	@$(CXX) $(CXXFLAGS) $(CXXINCDIRS) -o $@ $<
 
-$(PRODUCT2): $(OBJECTS2) $(COMMONOBJECTS)
+$(PRODUCT2): $(OBJECTS2)
 	$(eval OPS=$(shell echo $$(($(OPS)-$(OPS)))))
 	@echo -e "Linking CXX objects to: \033[0;33m$@\033[0m"
-	@$(CXX) $(CXXLIBS) $^ -o $@
+	@$(CXX) $(CXXLIBS) -DEDITOR $^ -o $@
 
 .cache/src/editor/%.d: src/editor/%.cc
 	$(eval OPS=$(shell echo $$(($(OPS)+1))))
