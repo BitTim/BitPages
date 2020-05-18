@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <thread>
 
 #include "lib/gui.hh"
 #include "lib/globals.hh"
@@ -8,7 +9,6 @@
 
 wxBEGIN_EVENT_TABLE(EditorGUIMain, wxFrame)
   EVT_CLOSE(EditorGUIMain::OnClose)
-  EVT_SIZING(EditorGUIMain::resizing)
   EVT_TIMER(10014, EditorGUIMain::timedUpdate)
   EVT_TIMER(10015, EditorGUIMain::timedCursorUpdate)
 
@@ -116,15 +116,6 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
 // Events
 //=============================
 
-void EditorGUIMain::loadPreview()
-{
-  wxFileInputStream previewIn(std::string(Global::_CACHEPATH / "preview.png"));
-  pngHandler->LoadFile(&previewImageData, previewIn);
-
-  previewImageData.Rescale(previewImage->GetMinSize().x, previewImage->GetMinSize().y);    
-  previewImage->SetBitmap(previewImageData);
-}
-
 void EditorGUIMain::update()
 {
   std::string input = std::string(textEdit->GetValue());
@@ -138,7 +129,8 @@ void EditorGUIMain::update()
     Global::_PREVSLIDEPREVIEW = Global::_CSLIDEPREVIEW;
     Global::_FORCEUPDATE = false;
 
-    previewUpdate();
+    Global::_PREVIEWTHREAD = std::thread(&EditorGUIMain::previewUpdate, this);
+    Global::_PREVIEWTHREAD.detach();
 
     warnings->Clear();
 
@@ -174,10 +166,22 @@ void EditorGUIMain::update()
 
 void EditorGUIMain::previewUpdate()
 {
-  if(Global::_CSLIDEPREVIEW < Global::_PRESENT->slides.size())
+  if(Global::_CSLIDEPREVIEW < Global::_PRESENT->slides.size() && !Global::_LOCKPREVIEWIMAGE)
   {
+    Global::_LOCKPREVIEWIMAGE = true;
     saveImage(generateSurface(Global::_CSLIDEPREVIEW), Global::_CACHEPATH / "preview.png");
-    loadPreview();
+
+    wxFileInputStream previewIn(std::string(Global::_CACHEPATH / "preview.png"));
+    pngHandler->LoadFile(&previewImageData, previewIn);
+
+    if(previewImageData.IsOk())
+    {
+      previewImageData.Rescale(previewImage->GetMinSize().x, previewImage->GetMinSize().y);    
+      previewImage->SetBitmap(previewImageData);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    Global::_LOCKPREVIEWIMAGE = false;
   }
 }
 
@@ -240,12 +244,6 @@ void EditorGUIMain::OnClose(wxCloseEvent& evt)
     else evt.Veto();
   }
   else Destroy();
-}
-
-void EditorGUIMain::resizing(wxSizeEvent &evt)
-{
-  previewUpdate();
-  evt.Skip();
 }
 
 void EditorGUIMain::save()

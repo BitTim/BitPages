@@ -33,6 +33,10 @@ EditorGUIApp* Global::gApp = nullptr;
 fs::path Global::_CACHEPATH = fs::temp_directory_path();
 
 std::vector<ErrorHighlight> Global::_ERRORS;
+std::thread Global::_PREVIEWTHREAD;
+
+bool Global::_CREATEDPREVIEWIMAGE = false;
+bool Global::_LOCKPREVIEWIMAGE = false;
 
 int main(int argc, char* argv[])
 {

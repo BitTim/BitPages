@@ -37,7 +37,6 @@ public:
 
   long prevCursorPos;
 
-  void loadPreview();
   void update();
   void previewUpdate();
   void timedUpdate(wxTimerEvent &evt);
@@ -45,7 +44,6 @@ public:
   void timedCursorUpdate(wxTimerEvent &evt);
 
   void OnClose(wxCloseEvent &evt);
-  void resizing(wxSizeEvent &evt);
 
   void save();
   void saveAs();

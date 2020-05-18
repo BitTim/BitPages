@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <filesystem>
+#include <thread>
 
 #include "objects.hh"
 #include "parser.hh"
@@ -40,4 +41,8 @@ struct Global
     static std::string _DEFAULTBACKGROUND;
 
     static std::vector<ErrorHighlight> _ERRORS;
+    static std::thread _PREVIEWTHREAD;
+
+    static bool _CREATEDPREVIEWIMAGE;
+    static bool _LOCKPREVIEWIMAGE;
 };
