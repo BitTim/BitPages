@@ -85,6 +85,17 @@ void parse(std::vector<Token> tokens, int cursorLine)
 			i += 1;
 			if (tokens[i].value[0] == '<' || tokens[i].value[0] == '[' || tokens[i].value[0] == '-') Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Using instruction as argument"));
 			Global::_PRESENT->background = tokens[i].value;
+
+			if(fs::path(Global::_PRESENT->background).is_relative())
+      {
+        std::string tmp;
+        int fnsep = Global::_SAVEPATH.find_last_of("/\\");
+
+        tmp = Global::_SAVEPATH.substr(0, fnsep + 1) + Global::_PRESENT->background;
+        Global::_PRESENT->background = tmp;
+      }
+
+			if(!fs::exists(Global::_PRESENT->background)) Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, cline, "File does not exist"));
 		}
 
 		else if (tokens[i].value == ".image")
@@ -93,6 +104,17 @@ void parse(std::vector<Token> tokens, int cursorLine)
 			if (tokens[i].value[0] == '<' || tokens[i].value[0] == '[' || tokens[i].value[0] == '-') Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Using instruction as argument"));
 			if (Global::_CSLIDE < 0) Global::_ERRORS.push_back(ErrorHighlight(ERROR_WARNING, cline, "Defined image outside of a slide"));
 			else Global::_PRESENT->slides[Global::_CSLIDE].image = tokens[i].value;
+
+			if(fs::path(Global::_PRESENT->slides[Global::_CSLIDE].image).is_relative())
+      {
+        std::string tmp;
+        int fnsep = Global::_SAVEPATH.find_last_of("/\\");
+
+        tmp = Global::_SAVEPATH.substr(0, fnsep + 1) + Global::_PRESENT->slides[Global::_CSLIDE].image;
+        Global::_PRESENT->slides[Global::_CSLIDE].image = tmp;
+      }
+
+      if(!fs::exists(Global::_PRESENT->slides[Global::_CSLIDE].image)) Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, cline, "File does not exist"));
 		}
 
 		else if (tokens[i].value == ".font")

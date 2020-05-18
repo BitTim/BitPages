@@ -16,15 +16,6 @@ SDL_Surface* generateSurface(int slide)
     SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 255, 255, 255));
     if (Global::_PRESENT->background != "none" && Global::_PRESENT->background != "default")
     {
-        if(fs::path(Global::_PRESENT->background).is_relative())
-        {
-            std::string tmp;
-            int fnsep = Global::_SAVEPATH.find_last_of("/\\");
-
-            tmp = Global::_SAVEPATH.substr(0, fnsep + 1) + Global::_PRESENT->background;
-            Global::_PRESENT->background = tmp;
-        }
-
         image = IMG_Load(Global::_PRESENT->background.c_str());
         if (image == NULL) Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, -1, "Failed to load background image: " + std::string(SDL_GetError())));
         else SDL_BlitScaled(image, NULL, surface, NULL);
@@ -104,15 +95,6 @@ SDL_Surface* generateSurface(int slide)
 
         if (Global::_PRESENT->slides[slide].image != "none")
         {
-            if(fs::path(Global::_PRESENT->slides[slide].image).is_relative())
-            {
-                std::string tmp;
-                int fnsep = Global::_SAVEPATH.find_last_of("/\\");
-
-                tmp = Global::_SAVEPATH.substr(0, fnsep + 1) + Global::_PRESENT->slides[slide].image;
-                Global::_PRESENT->slides[slide].image = tmp;
-            }
-
             image = IMG_Load(Global::_PRESENT->slides[slide].image.c_str());
             if (image == NULL) Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, -1, "Failed to render image: " + std::string(SDL_GetError())));
             else
