@@ -5,7 +5,7 @@
 #include "lib/globals.hh"
 #include "lib/parser.hh"
 #include "lib/imageGenerator.hh"
-#include "lib/presentCreator.hh"
+#include "lib/pdfCreator.hh"
 
 wxBEGIN_EVENT_TABLE(EditorGUIMain, wxFrame)
   EVT_CLOSE(EditorGUIMain::OnClose)
@@ -269,19 +269,45 @@ void EditorGUIMain::saveAs()
 
 void EditorGUIMain::exportPDF()
 {
-  if(Global::_SAVEPATH == "") exportPDFAs();
+  if(Global::_EXPORTPATH == "") exportPDFAs();
   else
   {
-    //createPresent();
+    textEdit->Enable(false);
+
+    std::vector<Token> tokens = tokenize(std::string(textEdit->GetValue()));
+    parse(tokens);
+
+    for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
+	  {
+		  SDL_Surface* surface = generateSurface(i);
+		  saveImage(surface, Global::_CACHEPATH.string() + std::to_string(i) + ".png");
+		  SDL_FreeSurface(surface);
+	  }
+
+    createPDF(Global::_EXPORTPATH);
+    textEdit->Enable(true);
   }
 }
 
 void EditorGUIMain::exportPDFAs()
 {
-  if(saveFileDialog->ShowModal() != wxID_CANCEL)
+  if(exportFileDialog->ShowModal() != wxID_CANCEL)
   {
-    Global::_EXPORTPATH = saveFileDialog->GetPath();
+    Global::_EXPORTPATH = exportFileDialog->GetPath();
 
+    textEdit->Enable(false);
+    std::vector<Token> tokens = tokenize(std::string(textEdit->GetValue()));
+    parse(tokens);
+
+    for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
+	  {
+		  SDL_Surface* surface = generateSurface(i);
+		  saveImage(surface, Global::_CACHEPATH.string() + std::to_string(i) + ".png");
+		  SDL_FreeSurface(surface);
+	  }
+
+    createPDF(Global::_EXPORTPATH);
+    textEdit->Enable(true);
   }
 }
 
@@ -342,8 +368,18 @@ void EditorGUIMain::onSaveAsClicked(wxCommandEvent &evt)
   evt.Skip();
 }
 
-void EditorGUIMain::onExportClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onExportAsClicked(wxCommandEvent &evt) { }
+void EditorGUIMain::onExportClicked(wxCommandEvent &evt)
+{
+  exportPDF();
+  evt.Skip();
+}
+
+void EditorGUIMain::onExportAsClicked(wxCommandEvent &evt)
+{
+  exportPDFAs();
+  evt.Skip();
+}
+
 void EditorGUIMain::onExitClicked(wxCommandEvent &evt)
 {
   if(checkSaved())
