@@ -5,6 +5,8 @@
   #include <wx/wx.h>
 #endif
 #include <wx/wfstream.h>
+#include <wx/colordlg.h>
+#include <wx/progdlg.h>
 
 class EditorGUIMain : public wxFrame
 {
@@ -14,6 +16,7 @@ public:
   wxMenuBar* menuBar;
   wxMenu* fileMenu;
   wxMenu* insertMenu;
+  wxMenu* helpMenu;
 
   wxPNGHandler* pngHandler;
 
@@ -26,8 +29,11 @@ public:
   wxTextCtrl* warnings;
 
   wxFileDialog* openFileDialog;
-  wxFileDialog* saveFileDialog;
+  wxDirDialog* saveFileDialog;
   wxFileDialog* exportFileDialog;
+  wxFileDialog* openImageDialog;
+  wxFileDialog* openFontDialog;
+  wxColourDialog* selectColorDialog;
 
   wxMessageDialog* notSaved;
   wxMessageDialog* error;
@@ -68,6 +74,9 @@ public:
   void onImageClicked(wxCommandEvent &evt);
   void onSubpointClicked(wxCommandEvent &evt);
 
+  void onDocsClicked(wxCommandEvent &evt);
+  void onAboutClicked(wxCommandEvent &evt);
+
   void onTextChanged(wxCommandEvent &evt);
 
   wxDECLARE_EVENT_TABLE();
@@ -79,10 +88,3 @@ public:
   bool OnInit();
   EditorGUIMain* mainFrame = nullptr;
 };
-
-void gprintf(std::string format, ...);
-void changeStatus(std::string status);
-void progress();
-
-void clearTerminal();
-void resetProgress();

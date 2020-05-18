@@ -29,6 +29,9 @@ wxBEGIN_EVENT_TABLE(EditorGUIMain, wxFrame)
   EVT_MENU(10009, EditorGUIMain::onSubtitleClicked)
   EVT_MENU(10010, EditorGUIMain::onSubpointClicked)
 
+  EVT_MENU(10016, EditorGUIMain::onDocsClicked)
+  EVT_MENU(10017, EditorGUIMain::onAboutClicked)
+
   EVT_TEXT(10011, EditorGUIMain::onTextChanged)
 wxEND_EVENT_TABLE()
 
@@ -57,9 +60,15 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
   insertMenu->Append(10009, _("Su&btitle"));
   insertMenu->Append(10010, _("Sub&point"));
 
+  helpMenu = new wxMenu();
+  helpMenu->Append(10016, _("&Documentation"));
+  helpMenu->AppendSeparator();
+  helpMenu->Append(10017, _("&About"));
+
   menuBar = new wxMenuBar();
   menuBar->Append(fileMenu, _("&File"));
   menuBar->Append(insertMenu, _("&Insert"));
+  menuBar->Append(helpMenu, _("&Help"));
   SetMenuBar(menuBar);
 
   pngHandler = new wxPNGHandler();
@@ -95,8 +104,11 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
   warnings->SetBackgroundColour(wxColor(0x33, 0x33, 0x33));
 
   openFileDialog = new wxFileDialog(this, _("Open presentation"), wxEmptyString, wxEmptyString, "Text files (*.txt)|*.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-  saveFileDialog = new wxFileDialog(this, _("Save presentation"), wxEmptyString, "Presentation.txt", "Text files (*.txt)|*.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-  exportFileDialog = new wxFileDialog(this, _("Select an input file"), wxEmptyString, "Presentation.pdf", "PDF Documents (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  saveFileDialog = new wxDirDialog(this, _("Select folder to save presentation to"), wxEmptyString);
+  exportFileDialog = new wxFileDialog(this, _("Select an input file"), wxEmptyString, "Presentation.pdf", "PDF documents (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  openImageDialog = new wxFileDialog(this, _("Open image"), wxEmptyString, wxEmptyString, "Image files (*.png;*.jpg;*.webp)|*.png;*.jpg;*.webp", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+  openFontDialog = new wxFileDialog(this, _("Open font"), wxEmptyString, wxEmptyString, "Font files (*.ttf)|*.ttf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+  selectColorDialog = new wxColourDialog(this);
 
   notSaved = new wxMessageDialog(this, "The file contains unsaved changes. Save changes?", "Unsaved file", wxYES_NO | wxCANCEL | wxNO_DEFAULT | wxICON_WARNING);
   error = new wxMessageDialog(this, wxEmptyString, wxEmptyString, wxICON_ERROR);
@@ -122,6 +134,9 @@ void EditorGUIMain::update()
   std::string input = std::string(textEdit->GetValue());
   int cursorLine = std::count(input.begin(), input.begin() + textEdit->GetInsertionPoint(), '\n') + 1;
 
+  if(!Global::_SAVED && Global::_SAVEPATH == Global::_CACHEPATH / "Editor" / "current.txt") textEdit->SaveFile(std::string(Global::_SAVEPATH));
+  if(Global::_SAVEPATH == "") Global::_SAVEPATH = Global::_CACHEPATH / "Editor" / "current.txt";
+
   std::vector<Token> tokens = tokenize(input);
   parse(tokens, cursorLine);
 
@@ -138,7 +153,7 @@ void EditorGUIMain::update()
     {
       std::string buffer = std::string(textEdit->GetValue());
       int tokenStart = buffer.find(tokens[i].value);
-      int tokenEnd = tokenStart + tokens[i].value.length() + 1;
+      int tokenEnd = tokenStart + tokens[i].value.length();
 
       if(tokens[i].value[0] == '.') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0x29, 0x3C, 0x7A), *wxWHITE));
       else if(tokens[i].value[0] == '*') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0x21, 0x54, 0x63), *wxWHITE));
@@ -205,6 +220,14 @@ void EditorGUIMain::previewUpdate()
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     Global::_LOCKPREVIEWIMAGE = false;
   }
+  else
+  {
+    wxFileInputStream previewIn(std::string("dat/emptyPreview.png"));
+    pngHandler->LoadFile(&previewImageData, previewIn);
+
+    previewImageData.Rescale(previewImage->GetMinSize().x, previewImage->GetMinSize().y);    
+    previewImage->SetBitmap(previewImageData);
+  }
 }
 
 void EditorGUIMain::timedUpdate(wxTimerEvent &evt)
@@ -242,7 +265,7 @@ bool EditorGUIApp::OnInit()
 
   //Load default font
 	Global::_DEFAULTFONT = { {"title", TTF_OpenFont("dat/defaultFont.ttf", 68)}, {"subtitle", TTF_OpenFont("dat/defaultFont.ttf", 46)}, {"normal", TTF_OpenFont("dat/defaultFont.ttf", 34)}, {"footer", TTF_OpenFont("dat/defaultFont.ttf", 12)} };
-	if (Global::_DEFAULTFONT["title"] == NULL || Global::_DEFAULTFONT["subtitle"] == NULL || Global::_DEFAULTFONT["normal"] == NULL)
+	if (Global::_DEFAULTFONT["title"] == NULL || Global::_DEFAULTFONT["subtitle"] == NULL || Global::_DEFAULTFONT["normal"] == NULL || Global::_DEFAULTFONT["footer"] == NULL)
 	{
 		printf("[ERROR]: Loading font: %s\n", TTF_GetError());
     mainFrame->error->SetTitle("Error loading default font");
@@ -271,10 +294,10 @@ void EditorGUIMain::OnClose(wxCloseEvent& evt)
 
 void EditorGUIMain::save()
 {
-  if(Global::_SAVEPATH == "") saveAs();
+  if(Global::_SAVEPATH == Global::_CACHEPATH / "Editor" / "current.txt") saveAs();
   else
   {
-    textEdit->SaveFile(Global::_SAVEPATH);
+    textEdit->SaveFile(Global::_SAVEPATH + "/Presentation.txt");
     Global::_SAVED = true;
   }
 }
@@ -283,9 +306,16 @@ void EditorGUIMain::saveAs()
 {
   if(saveFileDialog->ShowModal() != wxID_CANCEL)
   {
+    std::string prevPath = Global::_SAVEPATH;
     Global::_SAVEPATH = saveFileDialog->GetPath();
 
-    textEdit->SaveFile(Global::_SAVEPATH);
+    if(prevPath == Global::_CACHEPATH / "Editor" / "current.txt")
+    {
+      fs::copy(Global::_CACHEPATH / "Editor" / "Images", Global::_SAVEPATH + "/Images");
+      fs::copy(Global::_CACHEPATH / "Editor" / "Fonts", Global::_SAVEPATH + "/Fonts");
+    }
+
+    textEdit->SaveFile(Global::_SAVEPATH + "/Presentation.txt");
     Global::_SAVED = true;
   }
 }
@@ -295,20 +325,31 @@ void EditorGUIMain::exportPDF()
   if(Global::_EXPORTPATH == "") exportPDFAs();
   else
   {
+    wxProgressDialog progress("Exporting Presentation", "Exporting the presentation, please wait", 8, this, wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH | wxPD_REMAINING_TIME);
+    progress.Update(0);
+
     textEdit->Enable(false);
+    progress.Update(1);
 
     std::vector<Token> tokens = tokenize(std::string(textEdit->GetValue()));
+    progress.Update(2);
     parse(tokens);
+    progress.Update(3);
 
     for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
 	  {
 		  SDL_Surface* surface = generateSurface(i);
+      progress.Update(4);
 		  saveImage(surface, Global::_CACHEPATH.string() + std::to_string(i) + ".png");
+      progress.Update(5);
 		  SDL_FreeSurface(surface);
+      progress.Update(6);
 	  }
 
     createPDF(Global::_EXPORTPATH);
+    progress.Update(7);
     textEdit->Enable(true);
+    progress.Update(8);
   }
 }
 
@@ -318,19 +359,31 @@ void EditorGUIMain::exportPDFAs()
   {
     Global::_EXPORTPATH = exportFileDialog->GetPath();
 
+    wxProgressDialog progress("Exporting Presentation", "Exporting the presentation, please wait", 8, this, wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_SMOOTH | wxPD_REMAINING_TIME);
+    progress.Update(0);
+
     textEdit->Enable(false);
+    progress.Update(1);
+
     std::vector<Token> tokens = tokenize(std::string(textEdit->GetValue()));
+    progress.Update(2);
     parse(tokens);
+    progress.Update(3);
 
     for (int i = 0; i < Global::_PRESENT->slides.size(); i++)
 	  {
 		  SDL_Surface* surface = generateSurface(i);
+      progress.Update(4);
 		  saveImage(surface, Global::_CACHEPATH.string() + std::to_string(i) + ".png");
+      progress.Update(5);
 		  SDL_FreeSurface(surface);
+      progress.Update(6);
 	  }
 
     createPDF(Global::_EXPORTPATH);
+    progress.Update(7);
     textEdit->Enable(true);
+    progress.Update(8);
   }
 }
 
@@ -354,13 +407,23 @@ bool EditorGUIMain::checkSaved()
   return true;
 }
 
+
+//============================
+// File Menu
+//============================
+
 void EditorGUIMain::onNewClicked(wxCommandEvent &evt)
 {
   if(checkSaved())
   {
     textEdit->Clear();
-    Global::_SAVEPATH = "";
+    Global::_SAVEPATH = Global::_CACHEPATH / "Editor" / "current.txt";
     Global::_EXPORTPATH = "";
+
+    Global::_FORCEUPDATE = true;
+    update();
+
+    Global::_SAVED = true;
   }
   evt.Skip();
 }
@@ -412,14 +475,135 @@ void EditorGUIMain::onExitClicked(wxCommandEvent &evt)
   evt.Skip();
 }
 
-void EditorGUIMain::onBGClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onFontClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onColorClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onTitleClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onSlideClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onImageClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onSubtitleClicked(wxCommandEvent &evt) { }
-void EditorGUIMain::onSubpointClicked(wxCommandEvent &evt) { }
+
+//============================
+// Insert Menu
+//============================
+
+void EditorGUIMain::onBGClicked(wxCommandEvent &evt)
+{
+  if(openImageDialog->ShowModal() != wxID_CANCEL)
+  {
+    std::string inpath = std::string(openImageDialog->GetPath());
+    int fnsep = inpath.find_last_of("/\\");
+    std::string filename = inpath.substr(fnsep + 1, std::string::npos);
+
+    std::string savepath = Global::_SAVEPATH;
+    fnsep = savepath.find_last_of("/\\");
+    savepath = savepath.substr(0, fnsep + 1);
+
+    if(!fs::exists(savepath + "/Images")) fs::create_directory(savepath + "/Images");
+    std::string outpath = savepath + "/Images/" + filename;
+    fs::copy(inpath, outpath, fs::copy_options::skip_existing);
+    
+    textEdit->WriteText(".background ");
+    textEdit->WriteText(std::string("Images/" + filename));
+  }
+}
+
+void EditorGUIMain::onFontClicked(wxCommandEvent &evt)
+{
+  if(openFontDialog->ShowModal() != wxID_CANCEL)
+  {
+    std::string inpath = std::string(openFontDialog->GetPath());
+    int fnsep = inpath.find_last_of("/\\");
+    std::string filename = inpath.substr(fnsep + 1, std::string::npos);
+
+    std::string savepath = Global::_SAVEPATH;
+    fnsep = savepath.find_last_of("/\\");
+    savepath = savepath.substr(0, fnsep + 1);
+
+    if(!fs::exists(savepath + "/Fonts")) fs::create_directory(savepath + "/Fonts");
+    std::string outpath = savepath + "/Fonts/" + filename;
+    fs::copy(inpath, outpath, fs::copy_options::skip_existing);
+    
+    textEdit->WriteText(".font ");
+    textEdit->WriteText(std::string("Fonts/" + filename));
+  }
+}
+
+void EditorGUIMain::onColorClicked(wxCommandEvent &evt)
+{
+  if(selectColorDialog->ShowModal() != wxID_CANCEL)
+  {
+    wxColor color = selectColorDialog->GetColourData().GetColour();
+    char buf[8];
+
+    sprintf(buf, "%02x%02x%02x\n", color.Red(), color.Green(), color.Blue());
+
+    textEdit->WriteText(".color ");
+    textEdit->WriteText(std::string(buf));
+  }
+}
+
+void EditorGUIMain::onTitleClicked(wxCommandEvent &evt) 
+{
+  long cursor = textEdit->GetInsertionPoint();
+  textEdit->WriteText("<Title>");
+  textEdit->SetSelection(cursor + 1, cursor + 6);
+}
+
+void EditorGUIMain::onSlideClicked(wxCommandEvent &evt) 
+{
+  long cursor = textEdit->GetInsertionPoint();
+  textEdit->WriteText("[Title]");
+  textEdit->SetSelection(cursor + 1, cursor + 6);
+}
+
+void EditorGUIMain::onImageClicked(wxCommandEvent &evt)
+{
+  if(openImageDialog->ShowModal() != wxID_CANCEL)
+  {
+    std::string inpath = std::string(openImageDialog->GetPath());
+    int fnsep = inpath.find_last_of("/\\");
+    std::string filename = inpath.substr(fnsep + 1, std::string::npos);
+
+    std::string savepath = Global::_SAVEPATH;
+    fnsep = savepath.find_last_of("/\\");
+    savepath = savepath.substr(0, fnsep + 1);
+
+    if(!fs::exists(savepath + "/Images")) fs::create_directory(savepath + "/Images");
+    std::string outpath = savepath + "/Images/" + filename;
+    fs::copy(inpath, outpath, fs::copy_options::skip_existing);
+    
+    textEdit->WriteText(".image ");
+    textEdit->WriteText(std::string("Images/" + filename));
+  }
+}
+
+void EditorGUIMain::onSubtitleClicked(wxCommandEvent &evt) 
+{
+  long cursor = textEdit->GetInsertionPoint();
+  textEdit->WriteText("-Subitle-");
+  textEdit->SetSelection(cursor + 1, cursor + 8);
+}
+
+void EditorGUIMain::onSubpointClicked(wxCommandEvent &evt) 
+{
+  long cursor = textEdit->GetInsertionPoint();  
+  textEdit->WriteText("* Subpoint");
+  textEdit->SetSelection(cursor + 2, cursor + 11);
+}
+
+
+//============================
+// About Menu
+//============================
+
+void EditorGUIMain::onDocsClicked(wxCommandEvent &evt)
+{
+
+}
+
+void EditorGUIMain::onAboutClicked(wxCommandEvent &evt)
+{
+
+}
+
+
+//============================
+// Text Changed
+//============================
 
 void EditorGUIMain::onTextChanged(wxCommandEvent &evt)
 {
@@ -428,11 +612,3 @@ void EditorGUIMain::onTextChanged(wxCommandEvent &evt)
   idle->Start(300, true);
   evt.Skip();
 }
-
-//Compatibility with common libs
-void gprintf(std::string format, ...) {}
-void changeStatus(std::string status) {}
-void progress() {}
-
-void clearTerminal() {}
-void resetProgress() {}

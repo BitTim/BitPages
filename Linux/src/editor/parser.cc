@@ -131,8 +131,8 @@ void parse(std::vector<Token> tokens, int cursorLine)
         tokens[i].value = tmp;
       }
 			
-			Global::_PRESENT->font = { {"title", TTF_OpenFont(tokens[i].value.c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].value.c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].value.c_str(), 34)} };
-			if (Global::_PRESENT->font["title"] == NULL || Global::_PRESENT->font["subtitle"] == NULL || Global::_PRESENT->font["normal"] == NULL)
+			Global::_PRESENT->font = { {"title", TTF_OpenFont(tokens[i].value.c_str(), 68)}, {"subtitle", TTF_OpenFont(tokens[i].value.c_str(), 50)}, {"normal", TTF_OpenFont(tokens[i].value.c_str(), 34)}, {"footer", TTF_OpenFont(tokens[i].value.c_str(), 12)} };
+			if (Global::_PRESENT->font["title"] == NULL || Global::_PRESENT->font["subtitle"] == NULL || Global::_PRESENT->font["normal"] == NULL || Global::_PRESENT->font["footer"] == NULL)
 			{
 				Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, cline, "Error loading font, reverting to default"));
 				Global::_PRESENT->font = Global::_DEFAULTFONT;

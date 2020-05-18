@@ -5,7 +5,7 @@ PRODUCT2 := BitPresentEditor
 
 CXX := g++
 CXXFLAGS := -c -std=c++17 `wx-config-gtk3 --cxxflags`
-CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs` 
+CXXLIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lhpdf `wx-config-gtk3 --libs`
 CXXINCDIRS := -I.
 
 SOURCE := $(shell find src/compiler/ -name *.cc)
