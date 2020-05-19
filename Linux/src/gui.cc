@@ -114,7 +114,7 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
   error = new wxMessageDialog(this, wxEmptyString, wxEmptyString, wxICON_ERROR);
 
   wxIcon icon;
-  icon.LoadFile("dat/BPLogo_Editor.png", wxBITMAP_TYPE_PNG);
+  icon.LoadFile("dat/Logo.png", wxBITMAP_TYPE_PNG);
   SetIcons(icon);
 
   wxFileInputStream previewIn(std::string("dat/emptyPreview.png"));
@@ -598,7 +598,7 @@ void EditorGUIMain::onDocsClicked(wxCommandEvent &evt)
 void EditorGUIMain::onAboutClicked(wxCommandEvent &evt)
 {
   wxImage iconRaw;
-  wxFileInputStream iconIn(std::string("dat/BPLogo_Editor.png"));
+  wxFileInputStream iconIn(std::string("dat/Logo.png"));
   pngHandler->LoadFile(&iconRaw, iconIn);
   iconRaw.Rescale(100, 100);
 
