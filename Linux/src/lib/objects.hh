@@ -1,5 +1,8 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -41,10 +44,12 @@ struct Slide
 
 struct Presentation
 {
+	Presentation();
+
 	std::vector<Slide> slides;
-	void clean()
-	{
-		for(int i = 0; i < slides.size(); i++) slides[i].clean();
-		slides.clear();
-	}
+	std::string background;
+	SDL_Color* textcolor;
+	std::map<std::string, TTF_Font*> font;
+
+	void clean();
 };

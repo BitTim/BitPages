@@ -18,34 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="BitPresent.cpp" />
-    <ClCompile Include="fileParser.cpp" />
-    <ClCompile Include="gui.cpp" />
-    <ClCompile Include="imageGenerator.cpp" />
-    <ClCompile Include="pdfCreator.cpp" />
-    <ClCompile Include="presentCreator.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="fileParser.h" />
-    <ClInclude Include="globals.h" />
-    <ClInclude Include="gui.h" />
-    <ClInclude Include="imageGenerator.h" />
-    <ClInclude Include="objects.h" />
-    <ClInclude Include="pdfCreator.h" />
-    <ClInclude Include="presentCreator.h" />
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BitPresent.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.ico" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{6AE7B4F0-FF87-412C-8A68-0115AEBA5961}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{0D1F6BDE-5E9A-44EC-83DB-0B1AD470D8DC}</ProjectGuid>
     <RootNamespace>BitPresent</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -108,23 +83,19 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);D:\Coding\vcpkg\installed\x86-windows\lib\manual-link\SDL2main.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -137,13 +108,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE;WINVER=0x0400;__WXMSW__;_WINDOWS;wxUSE_GUI=1;WXUSINGDLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;WXUSINGDLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -152,13 +121,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);manual-link\SDL2main.lib;SDL2.lib;SDL2_ttf.lib;SDL2_image.lib;turbojpeg.lib;webp.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxmsw31u_adv.lib;wxmsw31u_aui.lib;wxmsw31u_core.lib;wxmsw31u_gl.lib;wxmsw31u_html.lib;wxmsw31u_media.lib;wxmsw31u_propgrid.lib;wxmsw31u_qa.lib;wxmsw31u_ribbon.lib;wxmsw31u_richtext.lib;wxmsw31u_stc.lib;wxmsw31u_webview.lib;wxmsw31u_xrc.lib;comctl32.lib;rpcrt4.lib;winmm.lib;wsock32.lib</AdditionalDependencies>
+      <AdditionalDependencies>manual-link/SDL2main.lib;SDL2.lib;SDL2_ttf.lib;SDL2_image.lib;libhpdf.lib;wxmsw31u_core.lib;wxbase31u.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -173,6 +140,22 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\gui.cc" />
+    <ClCompile Include="src\imageGenerator.cc" />
+    <ClCompile Include="src\main.cc" />
+    <ClCompile Include="src\objects.cc" />
+    <ClCompile Include="src\parser.cc" />
+    <ClCompile Include="src\pdfCreator.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\lib\globals.hh" />
+    <ClInclude Include="src\lib\gui.hh" />
+    <ClInclude Include="src\lib\imageGenerator.hh" />
+    <ClInclude Include="src\lib\objects.hh" />
+    <ClInclude Include="src\lib\parser.hh" />
+    <ClInclude Include="src\lib\pdfCreator.hh" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

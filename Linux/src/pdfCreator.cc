@@ -2,13 +2,11 @@
 
 #include <iostream>
 #include <vector>
+
 #include "lib/globals.hh"
 #include "lib/gui.hh"
 
-void errorHandler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void *user_data)
-{
-  gprintf("[ERROR]: Error with pdf: %04x, details: %s\n", error_no, strerror(detail_no));
-}
+HPDF_Error_Handler errorHandler;
 
 int createPDF(std::string outpath)
 {
@@ -16,24 +14,21 @@ int createPDF(std::string outpath)
 	pdf = HPDF_New(errorHandler, NULL);
   if(!pdf)
   {
-    gprintf("[ERROR]: Could not create pdf\n");
+    Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, -1, "Error creating PDF"));
     return -1;
   }
-
-  if(Global::useGUI) progress();
 
   HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);
   HPDF_SetPageMode(pdf, HPDF_PAGE_MODE_FULL_SCREEN);
 
-  if(Global::useGUI) progress();
 
   std::vector<HPDF_Page> pages;
-  for(int i = 0; i < Global::_PRESENT[Global::_CPRESENT]->slides.size(); i++)
+  for(int i = 0; i < Global::_PRESENT->slides.size(); i++)
   {
     pages.push_back(HPDF_AddPage(pdf));
     if (pages[i] == nullptr)
     {
-      gprintf("[ERROR]: Failed to create page for PDF\n");
+      Global::_ERRORS.push_back(ErrorHighlight(ERROR_ERROR, -1, "Error creating Page for PDF"));
       return -1;
     }
 
@@ -44,11 +39,8 @@ int createPDF(std::string outpath)
     HPDF_Page_DrawImage(pages[i], slide, 0, 0, HPDF_Image_GetWidth(slide), HPDF_Image_GetHeight(slide));
   }
 
-  if(Global::useGUI) progress();
-
   HPDF_SaveToFile(pdf, outpath.c_str());
   HPDF_Free(pdf);
 
-  if(Global::useGUI) progress();
   return 0;
 }

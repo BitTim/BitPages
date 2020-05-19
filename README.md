@@ -22,6 +22,7 @@ Make sure to have following installed:
 * libsdl2-ttf (libsdl2-ttf-dev on Ubuntu based)
 * libsdl2-image (libsdl2-image-dev on Ubuntu based)
 * libharu
+* wxgtk3 (or wxwidgets in general)
 
 And their dependencies. After that, run following commands:
 
@@ -41,5 +42,6 @@ Install following through vcpkg:
 * sdl2-image[libjpeg-turbo]
 * sdl2-image[libwebp]
 * libharu
+* wxwidgets
 
 Open the project, which is located in the Windows folder, in Visual Studio and build

@@ -5,51 +5,87 @@
   #include <wx/wx.h>
 #endif
 #include <wx/wfstream.h>
+#include <wx/colordlg.h>
+#include <wx/progdlg.h>
+#include <wx/aboutdlg.h>
 
-class guiMain : public wxFrame
+class EditorGUIMain : public wxFrame
 {
 public:
-  guiMain();
+  EditorGUIMain();
 
-  wxStaticText* title;
-  wxStaticText* inputLabel;
-  wxStaticText* outputLabel;
-  wxStaticText* statusLabel;
+  wxMenuBar* menuBar;
+  wxMenu* fileMenu;
+  wxMenu* insertMenu;
+  wxMenu* helpMenu;
 
   wxPNGHandler* pngHandler;
-  wxStaticBitmap* bplogo;
-  wxStaticBitmap* btlogo;
 
-  wxTextCtrl* inputPathBox;
-  wxTextCtrl* outputPathBox;
-  wxButton* inputBrowseBtn;
-  wxButton* outputBrowseBtn;
-  wxButton* createBtn;
-  wxButton* closeBtn;
-  wxGauge* progressBar;
-  wxTextCtrl* terminal;
+  wxBoxSizer* boxSizer;
+  wxTextCtrl* textEdit;
+  wxStaticBitmap* previewImage;
+  wxImage previewImageData;
+  
+  wxBoxSizer* preview;
+  wxTextCtrl* warnings;
 
   wxFileDialog* openFileDialog;
-  wxFileDialog* saveFileDialog;
+  wxDirDialog* saveFileDialog;
+  wxFileDialog* exportFileDialog;
+  wxFileDialog* openImageDialog;
+  wxFileDialog* openFontDialog;
+  wxColourDialog* selectColorDialog;
 
-  void OnInBtnClicked(wxCommandEvent &evt);
-  void OnOutBtnClicked(wxCommandEvent &evt);
-  void OnCloseBtnClicked(wxCommandEvent &evt);
-  void OnCreateBtnClicked(wxCommandEvent &evt);
+  wxMessageDialog* notSaved;
+  wxMessageDialog* error;
+
+  wxTimer* idle;
+  wxTimer* cursor;
+
+  long prevCursorPos;
+
+  void update();
+  void previewUpdate();
+  void timedUpdate(wxTimerEvent &evt);
+  void cursorUpdate(wxMouseEvent &evt);
+  void timedCursorUpdate(wxTimerEvent &evt);
+
+  void OnClose(wxCloseEvent &evt);
+
+  void save();
+  void saveAs();
+  void exportPDF();
+  void exportPDFAs();
+  bool checkSaved();
+
+  void onNewClicked(wxCommandEvent &evt);
+  void onOpenClicked(wxCommandEvent &evt);
+  void onSaveClicked(wxCommandEvent &evt);
+  void onSaveAsClicked(wxCommandEvent &evt);
+  void onExportClicked(wxCommandEvent &evt);
+  void onExportAsClicked(wxCommandEvent &evt);
+  void onExitClicked(wxCommandEvent &evt);
+
+  void onBGClicked(wxCommandEvent &evt);
+  void onFontClicked(wxCommandEvent &evt);
+  void onColorClicked(wxCommandEvent &evt);
+  void onTitleClicked(wxCommandEvent &evt);
+  void onSlideClicked(wxCommandEvent &evt);
+  void onSubtitleClicked(wxCommandEvent &evt);
+  void onImageClicked(wxCommandEvent &evt);
+  void onSubpointClicked(wxCommandEvent &evt);
+
+  void onDocsClicked(wxCommandEvent &evt);
+  void onAboutClicked(wxCommandEvent &evt);
+
+  void onTextChanged(wxCommandEvent &evt);
 
   wxDECLARE_EVENT_TABLE();
 };
 
-class guiApp : public wxApp
+class EditorGUIApp : public wxApp
 {
 public:
-  virtual bool OnInit();
-  guiMain* mainFrame = nullptr;
+  bool OnInit();
+  EditorGUIMain* mainFrame = nullptr;
 };
-
-void gprintf(std::string format, ...);
-void changeStatus(std::string status);
-void progress();
-
-void clearTerminal();
-void resetProgress();
