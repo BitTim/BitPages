@@ -1,4 +1,23 @@
+/*
+BitPresent, an application for creating Presentations in PDF format, based on Markdown styled input
+Copyright (C) 2020 BitTim
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+
 #include <SDL2/SDL_image.h>
+#include <fstream>
 
 #include "lib/globals.hh"
 #include "lib/gui.hh"
@@ -38,6 +57,8 @@ std::thread Global::_PREVIEWTHREAD;
 bool Global::_CREATEDPREVIEWIMAGE = false;
 bool Global::_LOCKPREVIEWIMAGE = false;
 
+std::string Global::_LICENSE;
+
 int main(int argc, char* argv[])
 {
   //Create Foled in /tmp
@@ -49,6 +70,10 @@ int main(int argc, char* argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_WEBP);
 	TTF_Init();
+
+	//Load GPL3 License
+	std::ifstream license("dat/license.txt");
+	Global::_LICENSE = std::string((std::istreambuf_iterator<char>(license)), std::istreambuf_iterator<char>());
 
 	//Create Presentation Object for later
 	Global::_PRESENT = new Presentation();

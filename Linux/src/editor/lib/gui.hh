@@ -7,6 +7,7 @@
 #include <wx/wfstream.h>
 #include <wx/colordlg.h>
 #include <wx/progdlg.h>
+#include <wx/aboutdlg.h>
 
 class EditorGUIMain : public wxFrame
 {

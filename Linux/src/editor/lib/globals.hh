@@ -45,4 +45,6 @@ struct Global
 
     static bool _CREATEDPREVIEWIMAGE;
     static bool _LOCKPREVIEWIMAGE;
+
+    static std::string _LICENSE;
 };

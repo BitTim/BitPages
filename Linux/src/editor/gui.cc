@@ -592,14 +592,31 @@ void EditorGUIMain::onSubpointClicked(wxCommandEvent &evt)
 
 void EditorGUIMain::onDocsClicked(wxCommandEvent &evt)
 {
-
+  wxLaunchDefaultBrowser("https://github.com/BitTim/BitPresent/blob/master/docs/BitPresent%20-%20Documentation.pdf");
 }
 
 void EditorGUIMain::onAboutClicked(wxCommandEvent &evt)
 {
+  wxImage iconRaw;
+  wxFileInputStream iconIn(std::string("dat/BPLogo_Editor.png"));
+  pngHandler->LoadFile(&iconRaw, iconIn);
+  iconRaw.Rescale(100, 100);
 
+  wxBitmap iconBitmap(iconRaw);
+  wxIcon icon;
+  icon.CopyFromBitmap(iconBitmap);
+  
+  wxAboutDialogInfo aboutInfo;
+  aboutInfo.SetIcon(icon);
+  aboutInfo.SetName("BitPresent");
+  aboutInfo.SetVersion(Global::_VERSIONSTRING);
+  aboutInfo.SetDescription(_("An application for creating Presentations in PDF format, based on Markdown styled input"));
+  aboutInfo.SetCopyright("(C) 2020 BitTim");
+  aboutInfo.SetWebSite("https://www.github.com/BitTim/BitPresent/");
+  aboutInfo.SetLicence(Global::_LICENSE);
+  aboutInfo.AddDeveloper("BitTim");
+  wxAboutBox(aboutInfo);
 }
-
 
 //============================
 // Text Changed
