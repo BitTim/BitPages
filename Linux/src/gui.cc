@@ -87,7 +87,7 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
   preview = new wxBoxSizer(wxVERTICAL);
 
   preview->Add(previewImage, 0, wxBOTTOM, 10);
-  preview->Add(warnings, 1, wxEXPAND | wxTOP | wxALIGN_CENTER, 10);
+  preview->Add(warnings, 1, wxEXPAND | wxTOP, 10);
 
   boxSizer->Add(textEdit, 1, wxEXPAND | wxALL, 10);
   boxSizer->Add(preview, 0, wxEXPAND | wxALL, 10);
@@ -135,7 +135,7 @@ void EditorGUIMain::update()
   int cursorLine = std::count(input.begin(), input.begin() + textEdit->GetInsertionPoint(), '\n') + 1;
 
   if(!Global::_SAVED && Global::_SAVEPATH == Global::_CACHEPATH / "Editor" / "current.txt") textEdit->SaveFile(std::string(Global::_SAVEPATH));
-  if(Global::_SAVEPATH == "") Global::_SAVEPATH = Global::_CACHEPATH / "Editor" / "current.txt";
+  if(Global::_SAVEPATH == "") Global::_SAVEPATH = (Global::_CACHEPATH / "Editor" / "current.txt").string();
 
   std::vector<Token> tokens = tokenize(input);
   parse(tokens, cursorLine);
@@ -206,9 +206,9 @@ void EditorGUIMain::previewUpdate()
   if(Global::_CSLIDEPREVIEW < Global::_PRESENT->slides.size() && !Global::_LOCKPREVIEWIMAGE)
   {
     Global::_LOCKPREVIEWIMAGE = true;
-    saveImage(generateSurface(Global::_CSLIDEPREVIEW), Global::_CACHEPATH / "preview.png");
+    saveImage(generateSurface(Global::_CSLIDEPREVIEW), (Global::_CACHEPATH / "preview.png").string());
 
-    wxFileInputStream previewIn(std::string(Global::_CACHEPATH / "preview.png"));
+    wxFileInputStream previewIn((Global::_CACHEPATH / "preview.png").string());
     pngHandler->LoadFile(&previewImageData, previewIn);
 
     if(previewImageData.IsOk())
@@ -263,14 +263,14 @@ bool EditorGUIApp::OnInit()
   mainFrame->Show();
   mainFrame->Maximize();
 
-  //Load default font
+     //Load default font
 	Global::_DEFAULTFONT = { {"title", TTF_OpenFont("dat/defaultFont.ttf", 68)}, {"subtitle", TTF_OpenFont("dat/defaultFont.ttf", 46)}, {"normal", TTF_OpenFont("dat/defaultFont.ttf", 34)}, {"footer", TTF_OpenFont("dat/defaultFont.ttf", 12)} };
 	if (Global::_DEFAULTFONT["title"] == NULL || Global::_DEFAULTFONT["subtitle"] == NULL || Global::_DEFAULTFONT["normal"] == NULL || Global::_DEFAULTFONT["footer"] == NULL)
 	{
 		printf("[ERROR]: Loading font: %s\n", TTF_GetError());
-    mainFrame->error->SetTitle("Error loading default font");
-    mainFrame->error->SetMessage("Could not load default Font. Make sure the \"dat\" folder is present in the installation folder of BitPresent");
-    mainFrame->error->ShowModal();
+        mainFrame->error->SetTitle("Error loading default font");
+        mainFrame->error->SetMessage("Could not load default Font. Make sure the \"dat\" folder is present in the installation folder of BitPresent");
+        mainFrame->error->ShowModal();
 		return false;
 	}
 	Global::_PRESENT->font = Global::_DEFAULTFONT;
@@ -417,7 +417,7 @@ void EditorGUIMain::onNewClicked(wxCommandEvent &evt)
   if(checkSaved())
   {
     textEdit->Clear();
-    Global::_SAVEPATH = Global::_CACHEPATH / "Editor" / "current.txt";
+    Global::_SAVEPATH = (Global::_CACHEPATH / "Editor" / "current.txt").string();
     Global::_EXPORTPATH = "";
 
     Global::_FORCEUPDATE = true;
@@ -615,6 +615,7 @@ void EditorGUIMain::onAboutClicked(wxCommandEvent &evt)
   aboutInfo.SetWebSite("https://www.github.com/BitTim/BitPresent/");
   aboutInfo.SetLicence(Global::_LICENSE);
   aboutInfo.AddDeveloper("BitTim");
+  aboutInfo.AddDocWriter("BitTim");
   wxAboutBox(aboutInfo);
 }
 

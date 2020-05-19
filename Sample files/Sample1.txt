@@ -7,11 +7,7 @@ Point 1
 Point 2
 Point 3
 This is a very long and pointless sentence that noone would ever use in a presentation.
-<<<<<<< HEAD
-.image /home/tim/Coding/BitPresent/Sample files/sampleImage.png
-=======
 .image sampleImage.png
->>>>>>> gui
 
 [No Subtitle and No Image!]
 Lol
