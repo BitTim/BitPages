@@ -104,11 +104,20 @@ SDL_Surface* generateSurface(int slide)
                 dst.x = Global::_WIDTH - Global::_BORDERS - dst.w;
                 dst.y = Global::_HEIGHT - Global::_BORDERS - dst.h;
 
-                if (dst.w > Global::_WIDTH / 2)
+                if (dst.w > Global::_WIDTH / 2 && Global::_PRESENT->slides[slide].points.size() != 0)
                 {
                     SDL_Rect tmp = dst;
 
                     dst.w = Global::_WIDTH / 2;
+                    dst.h = int(float(float(dst.w) / float(tmp.w) * float(tmp.h)));
+                    dst.x = Global::_WIDTH - Global::_BORDERS - dst.w;
+                    dst.y = Global::_HEIGHT - Global::_BORDERS - dst.h;
+                }
+                else if(dst.w > Global::_WIDTH - (2 * Global::_BORDERS) && Global::_PRESENT->slides[slide].points.size() == 0)
+                {
+                    SDL_Rect tmp = dst;
+
+                    dst.w = Global::_WIDTH - (2 * Global::_BORDERS);
                     dst.h = int(float(float(dst.w) / float(tmp.w) * float(tmp.h)));
                     dst.x = Global::_WIDTH - Global::_BORDERS - dst.w;
                     dst.y = Global::_HEIGHT - Global::_BORDERS - dst.h;
