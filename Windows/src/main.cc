@@ -23,7 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 #include "lib/gui.hh"
 
 //Initialize all global variables
-std::string Global::_VERSIONSTRING = "BitPresent v1.3.1";
+std::string Global::_VERSIONSTRING = "BitPresent v1.3.2";
 
 int Global::_WIDTH = 1920;
 int Global::_HEIGHT = 1080;
@@ -53,7 +53,6 @@ EditorGUIApp* Global::gApp = nullptr;
 fs::path Global::_CACHEPATH = fs::temp_directory_path();
 
 std::vector<ErrorHighlight> Global::_ERRORS;
-std::vector<std::thread> Global::_PREVIEWTHREAD;
 
 bool Global::_CREATEDPREVIEWIMAGE = false;
 bool Global::_LOCKPREVIEWIMAGE = false;
@@ -91,9 +90,6 @@ int main(int argc, char* argv[])
 	wxApp::SetInstance(Global::gApp);
 	wxEntry(argc, argv);
 	wxEntryCleanup();
-
-	//Wait for all Threads to join
-	for(int i = 0; i < Global::_PREVIEWTHREAD.size(); i++) if (Global::_PREVIEWTHREAD[i].joinable()) Global::_PREVIEWTHREAD[i].join();
 
 	//Clear /tmp folder
 	fs::remove_all(Global::_CACHEPATH / "Editor/Images/");

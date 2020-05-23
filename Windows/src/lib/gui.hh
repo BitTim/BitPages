@@ -26,6 +26,8 @@ public:
   wxStaticBitmap* previewImage;
   wxImage previewImageData;
   
+  wxButton* updateBtn;
+
   wxBoxSizer* preview;
   wxTextCtrl* warnings;
 
@@ -57,6 +59,8 @@ public:
   void exportPDF();
   void exportPDFAs();
   bool checkSaved();
+
+  void onUpdateClicked(wxCommandEvent& evt);
 
   void onNewClicked(wxCommandEvent &evt);
   void onOpenClicked(wxCommandEvent &evt);

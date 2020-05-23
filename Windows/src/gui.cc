@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <thread>
 
 #include "lib/gui.hh"
 #include "lib/globals.hh"
@@ -30,6 +29,8 @@ wxBEGIN_EVENT_TABLE(EditorGUIMain, wxFrame)
   EVT_MENU(10008, EditorGUIMain::onImageClicked)
   EVT_MENU(10009, EditorGUIMain::onSubtitleClicked)
   EVT_MENU(10010, EditorGUIMain::onSubpointClicked)
+
+    EVT_BUTTON(10018, EditorGUIMain::onUpdateClicked)
 
   EVT_MENU(10016, EditorGUIMain::onDocsClicked)
   EVT_MENU(10017, EditorGUIMain::onAboutClicked)
@@ -86,9 +87,11 @@ EditorGUIMain::EditorGUIMain() : wxFrame(nullptr, wxID_ANY, "")
   idle = new wxTimer(this, 10014);
   cursor = new wxTimer(this, 10015);
 
+  updateBtn = new wxButton(this, 10018, "Update Preview");
   preview = new wxBoxSizer(wxVERTICAL);
 
   preview->Add(previewImage, 0, wxBOTTOM, 10);
+  preview->Add(updateBtn, 0, wxBOTTOM | wxALIGN_CENTER, 10);
   preview->Add(warnings, 1, wxEXPAND | wxTOP, 10);
 
   boxSizer->Add(textEdit, 1, wxEXPAND | wxALL, 10);
@@ -148,8 +151,6 @@ void EditorGUIMain::previewUpdate()
               previewImage->SetBitmap(previewImageData);
           }
 
-          std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
           Global::_LOCKPREVIEWIMAGE = false;
       }
       else
@@ -179,8 +180,6 @@ void EditorGUIMain::update()
   {
     Global::_PREVSLIDEPREVIEW = Global::_CSLIDEPREVIEW;
     Global::_FORCEUPDATE = false;
-
-    Global::_PREVIEWTHREAD.push_back(std::thread(&EditorGUIMain::previewUpdate, this));
 
     //Syntax Highlighting
     for(int i = 0; i < tokens.size(); i++)
@@ -262,6 +261,12 @@ void EditorGUIMain::timedCursorUpdate(wxTimerEvent &evt)
   evt.Skip();
 }
 
+void EditorGUIMain::onUpdateClicked(wxCommandEvent& evt)
+{
+    previewUpdate();
+    evt.Skip();
+}
+
 bool EditorGUIApp::OnInit()
 {
   mainFrame = new EditorGUIMain();
@@ -284,8 +289,11 @@ bool EditorGUIApp::OnInit()
 	Global::_PRESENT->font = Global::_DEFAULTFONT;
 
   mainFrame->prevCursorPos = mainFrame->textEdit->GetInsertionPoint();
-  mainFrame->SetBackgroundColour(*wxWHITE);
+  mainFrame->SetBackgroundColour(wxColor(0xDC, 0xDC, 0xDC));
   mainFrame->cursor->Start(1);
+
+  mainFrame->Refresh();
+  mainFrame->Update();
 
   return true;
 }

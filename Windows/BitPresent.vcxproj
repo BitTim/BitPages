@@ -149,12 +149,19 @@
     <ClCompile Include="src\pdfCreator.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\lib\globals.hh" />
     <ClInclude Include="src\lib\gui.hh" />
     <ClInclude Include="src\lib\imageGenerator.hh" />
     <ClInclude Include="src\lib\objects.hh" />
     <ClInclude Include="src\lib\parser.hh" />
     <ClInclude Include="src\lib\pdfCreator.hh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BitPresent.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
