@@ -44,4 +44,9 @@ Install following through vcpkg:
 * libharu
 * wxwidgets
 
-Open the project, which is located in the Windows folder, in Visual Studio and build
+Create a new empty Project, import the source files (Located in ./src) and modify following project settings for the Release config:
+* Configuration Properties -> General -> C++ Language Standard -> ISO C++17 Standard (std:c++17)
+* C/C++ -> Preprocessor -> Preprocessor Definitions -> Add "WIN32;NDEBUG;_WINDOWS;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;WXUSINGDLL
+* Linker -> Input -> Additional Dependencies -> Add "manual-link/SDL2main.lib;SDL2.lib;SDL2_ttf.lib;SDL2_image.lib;libhpdf.lib;wxmsw31u_core.lib;wxbase31u.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)"
+* Linker -> System -> SubSystem -> Windows (/SUBSYSTEM:WINDOWS)
+Build with the Release config selected
