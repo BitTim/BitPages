@@ -1,8 +1,8 @@
 #pragma once
 
 #include <wx/wxprec.h>
-    #ifndef WX_PRECOMP
-#include <wx/wx.h>
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
 #endif
 
 #include <wx/wfstream.h>
@@ -19,8 +19,13 @@ class GUIMain : public wxFrame
 {
 public:
   GUIMain();
+
+  wxPNGHandler* getPNGHandler();
   wxTimer* getCursorTimer();
   long getCursorPos();
+
+  void clearPreview();
+  void setPreview();
 
 private:
     void initMenuBar();
@@ -33,8 +38,6 @@ private:
 
     void initStyles();
     void initDialogs();
-
-    void clearPreview();
 
     wxStyledTextCtrl* textEdit;
     wxTextCtrl* warnings;
@@ -63,3 +66,6 @@ class GUIApp : public wxApp
 public:
     GUIMain* mainFrame = nullptr;
 };
+
+extern GUIApp* guiApp;
+extern bool programChanged;

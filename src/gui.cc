@@ -125,6 +125,7 @@ void GUIMain::initStyles()
 	font.SetFamily(wxFONTFAMILY_TELETYPE);
 	textEdit->SetFont(font);
 	textEdit->SetBackgroundColour(*wxWHITE);
+	textEdit->SetMarginType(10, wxSTC_MARGIN_NUMBER);
 
 	font = warnings->GetFont();
 	font.SetFamily(wxFONTFAMILY_TELETYPE);
@@ -154,113 +155,31 @@ void GUIMain::clearPreview()
 	preview->SetBitmap(data);
 }
 
+void GUIMain::setPreview()
+{
+	wxFileInputStream previewIn((Global::_CACHEPATH / "preview.png").string());
+	wxImage data;
+
+	pngHandler->LoadFile(&data, previewIn);
+
+	if (data.IsOk())
+	{
+		data.Rescale(preview->GetMinSize().x, preview->GetMinSize().y);
+		preview->SetBitmap(data);
+	}
+	else clearPreview();
+}
+
+wxPNGHandler* GUIMain::getPNGHandler() { return pngHandler; }
 wxTimer* GUIMain::getCursorTimer() { return cursor; }
 long GUIMain::getCursorPos() { return textEdit->GetInsertionPoint(); }
 
 //=============================
 // Events
 //=============================
-
-void EditorGUIMain::previewUpdate()
-{
-	  if (Global::_CSLIDEPREVIEW < Global::_PRESENT->slides.size() && !Global::_LOCKPREVIEWIMAGE)
-	  {
-		  Global::_LOCKPREVIEWIMAGE = true;
-
-		  saveImage(generateSurface(Global::_CSLIDEPREVIEW), (Global::_CACHEPATH / "preview.png").string());
-
-		  wxFileInputStream previewIn((Global::_CACHEPATH / "preview.png").string());
-		  pngHandler->LoadFile(&previewImageData, previewIn);
-
-		  if (previewImageData.IsOk())
-		  {
-			  previewImageData.Rescale(previewImage->GetMinSize().x, previewImage->GetMinSize().y);
-			  previewImage->SetBitmap(previewImageData);
-		  }
-
-		  Global::_LOCKPREVIEWIMAGE = false;
-	  }
-	  else
-	  {
-		  wxFileInputStream previewIn(std::string("dat/emptyPreview.png"));
-		  pngHandler->LoadFile(&previewImageData, previewIn);
-
-		  previewImageData.Rescale(previewImage->GetMinSize().x, previewImage->GetMinSize().y);
-		  previewImage->SetBitmap(previewImageData);
-	  }
-  }
-
 void EditorGUIMain::update()
 {
-	programChanged = true;
-  std::string input = std::string(textEdit->GetValue());
-  int cursorLine = std::count(input.begin(), input.begin() + textEdit->GetInsertionPoint(), '\n') + 1;
-
-  if (Global::_SAVEFILENAME == "") Global::_SAVEFILENAME = "Presentation.txt";
-  if(!Global::_SAVED && Global::_SAVEPATH == Global::_CACHEPATH / "Editor") textEdit->SaveFile(std::string(Global::_SAVEPATH + "/" + Global::_SAVEFILENAME));
-  if(Global::_SAVEPATH == "") Global::_SAVEPATH = (Global::_CACHEPATH / "Editor").string();
-
-  std::vector<Token> tokens = tokenize(input);
-  parse(tokens, cursorLine);
-
-  if(Global::_CSLIDEPREVIEW != Global::_PREVSLIDEPREVIEW || Global::_FORCEUPDATE)
-  {
-	Global::_PREVSLIDEPREVIEW = Global::_CSLIDEPREVIEW;
-	Global::_FORCEUPDATE = false;
-
-	//Syntax Highlighting
-	for(int i = 0; i < tokens.size(); i++)
-	{
-	  std::string buffer = std::string(textEdit->GetValue());
-	  int tokenStart = buffer.find(tokens[i].value);
-	  int tokenEnd = tokenStart + tokens[i].value.length();
-
-	  if(tokens[i].value[0] == '.') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0x29, 0x3C, 0x7A), *wxWHITE));
-	  else if(tokens[i].value[0] == '*') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0x21, 0x54, 0x63), *wxWHITE));
-	  else if(tokens[i].value[0] == '<' && tokens[i].value[tokens[i].value.length() - 1] == '>') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0x43, 0x6F, 0x25), *wxWHITE));
-	  else if(tokens[i].value[0] == '[' && tokens[i].value[tokens[i].value.length() - 1] == ']') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0xA1, 0x36, 0x42), *wxWHITE));
-	  else if(tokens[i].value[0] == '-' && tokens[i].value[tokens[i].value.length() - 1] == '-') textEdit->SetStyle(tokenStart, tokenEnd, wxTextAttr(wxColor(0xC3, 0x99, 0x4B), *wxWHITE));
-	  else textEdit->SetStyle(tokenStart, tokenEnd < textEdit->GetLastPosition() ? tokenEnd + 1 : tokenEnd, wxTextAttr(wxColor(0x10, 0x09, 0x1B), *wxWHITE));
-	}
-
-	//Warnings and Errors
-	warnings->Clear();
-
-	for(int i = 0; i < Global::_ERRORS.size(); i++)
-	{
-	  long cursorStart;
-	  long cursorEnd;
-
-	  if(Global::_ERRORS[i].line != -1)
-	  {
-	   cursorStart = textEdit->XYToPosition(0, Global::_ERRORS[i].line - 1);
-	   cursorEnd = cursorStart + textEdit->GetLineLength(Global::_ERRORS[i].line - 1);
-	  }
-
-	  if(Global::_ERRORS[i].type == ERROR_ERROR)
-	  {
-		warnings->SetDefaultStyle(wxTextAttr(wxColor(0xC0, 0x3B, 0x3A)));
-		if(Global::_ERRORS[i].line != -1) textEdit->SetStyle(cursorStart, cursorEnd, wxTextAttr(wxNullColour, wxColor(0xDE, 0x9C, 0x9C)));
-	  }
-
-	  if(Global::_ERRORS[i].type == ERROR_WARNING)
-	  {
-		warnings->SetDefaultStyle(wxTextAttr(wxColor(0xF5, 0xD5, 0x57)));
-		if(Global::_ERRORS[i].line != -1) textEdit->SetStyle(cursorStart, cursorEnd, wxTextAttr(wxNullColour, wxColor(0xDD, 0xC7, 0x98)));
-	  }
-
-	  if(Global::_ERRORS[i].line != -1) warnings->AppendText("Line " + std::to_string(Global::_ERRORS[i].line) + ": ");
-	  warnings->AppendText(Global::_ERRORS[i].desc + "\n");
-	}
-
-	if(Global::_ERRORS.size() == 0)
-	{
-	  warnings->SetDefaultStyle(wxTextAttr(wxColor(0x89, 0xB1, 0x7E)));
-	  warnings->AppendText("No warnings or errors");
-	}
-  }
-
-  programChanged = false;
+	
 }
 
 void EditorGUIMain::timedUpdate(wxTimerEvent &evt)
