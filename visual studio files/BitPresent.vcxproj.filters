@@ -18,37 +18,19 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lib\loader.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\objects.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\parser.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\pdfCreator.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\lib\cleanup.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\lib\init.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\lib\globals.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lib\gui.hh">
+    <ClInclude Include="..\src\lib\loader.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\lib\guiActions.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\guiEvents.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\imageGenerator.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\lib\init.hh">
+    <ClInclude Include="..\src\lib\objects.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -63,37 +45,16 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\imageGenerator.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\init.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\loader.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\objects.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\parser.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\pdfCreator.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\cleanup.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\gui.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\guiActions.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\guiEvents.cc">
+    <ClCompile Include="..\src\loader.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

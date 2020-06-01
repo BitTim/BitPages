@@ -4,7 +4,7 @@
 #include <string>
 #include <filesystem>
 
-#define _VERSIONSTRING "BitPresent v1.3.3"
+#define _VERSIONSTRING "BitPages v1.3.3"
 #define _LICENSE "GPL3 License: https://www.gnu.org/licenses/gpl-3.0.en.html"
 
 #define _WIDTH 1920

@@ -23,6 +23,7 @@
     <ProjectGuid>{0D1F6BDE-5E9A-44EC-83DB-0B1AD470D8DC}</ProjectGuid>
     <RootNamespace>BitPresent</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>BitPages</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -143,15 +144,9 @@
   <ItemGroup>
     <ClInclude Include="..\src\lib\cleanup.hh" />
     <ClInclude Include="..\src\lib\globals.hh" />
-    <ClInclude Include="..\src\lib\gui.hh" />
-    <ClInclude Include="..\src\lib\guiActions.hh" />
-    <ClInclude Include="..\src\lib\guiEvents.hh" />
-    <ClInclude Include="..\src\lib\imageGenerator.hh" />
     <ClInclude Include="..\src\lib\init.hh" />
     <ClInclude Include="..\src\lib\loader.hh" />
     <ClInclude Include="..\src\lib\objects.hh" />
-    <ClInclude Include="..\src\lib\parser.hh" />
-    <ClInclude Include="..\src\lib\pdfCreator.hh" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -162,16 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\cleanup.cc" />
-    <ClCompile Include="..\src\gui.cc" />
-    <ClCompile Include="..\src\guiActions.cc" />
-    <ClCompile Include="..\src\guiEvents.cc" />
-    <ClCompile Include="..\src\imageGenerator.cc" />
     <ClCompile Include="..\src\init.cc" />
     <ClCompile Include="..\src\loader.cc" />
     <ClCompile Include="..\src\main.cc" />
-    <ClCompile Include="..\src\objects.cc" />
-    <ClCompile Include="..\src\parser.cc" />
-    <ClCompile Include="..\src\pdfCreator.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

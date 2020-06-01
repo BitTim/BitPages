@@ -1,5 +1,5 @@
 /*
-BitPresent, an application for creating Presentations in PDF format, based on Markdown styled input
+BitPages, an application for creating Presentations and Documents in PDF format, based on Markdown styled input
 Copyright (C) 2020 BitTim
 
 This program is free software: you can redistribute it and/or modify
