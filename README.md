@@ -1,14 +1,8 @@
-# BitPresent
-## A presentation engine, that creates a PDF from a markdown styled input file
+# BitPages
+## An interpreter for creation of presentations and documents in PDF format, based on Markdown styled input
 
 ### Installation
 Installation is straight forward, just download the package you need from the releases and either extract the folder or run the installer if you are on Windows.
-
-**Important!** Make sure to have a folder called ".cache" for Linux or "cache" for Windows in the installation folder. If not, the program will crash. For Linux you can check by using following commands in the terminal:
-```
-cd path/to/bitPresent/installation
-ls -a
-```
 
 ### Usage:
 See the documentation in the docs folder here or just follow this link:
@@ -27,8 +21,8 @@ Make sure to have following installed:
 And their dependencies. After that, run following commands:
 
 ```
-git clone https://github.com/bittim/bitpresent/BitPresent
-cd BitPresent/Linux/
+git clone https://github.com/bittim/bitpresent/BitPages
+cd BitPages
 make init
 make
 ```
