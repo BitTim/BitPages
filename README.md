@@ -1,4 +1,4 @@
-# BitPages
+# BitPresent
 ## An interpreter for creation of presentations and documents in PDF format, based on Markdown styled input
 
 ### Installation
@@ -21,8 +21,8 @@ Make sure to have following installed:
 And their dependencies. After that, run following commands:
 
 ```
-git clone https://github.com/bittim/bitpresent/BitPages
-cd BitPages
+git clone https://github.com/bittim/BitPresent
+cd BitPresent
 make init
 make
 ```
@@ -38,11 +38,4 @@ Install following through vcpkg:
 * libharu
 * wxwidgets
 
-Create a new empty Project, import the source files (Located in ./src) and modify following project settings for the Release config:
-* Configuration Properties -> General -> C++ Language Standard -> ISO C++17 Standard (std:c++17)
-* C/C++ -> Preprocessor -> Preprocessor Definitions -> Add this:
-```WIN32;NDEBUG;_WINDOWS;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;WXUSINGDLL```
-* Linker -> Input -> Additional Dependencies -> Add this:
-```manual-link/SDL2main.lib;SDL2.lib;SDL2_ttf.lib;SDL2_image.lib;libhpdf.lib;wxmsw31u_core.lib;wxbase31u.lib;comctl32.lib;rpcrt4.lib;winmm.lib;advapi32.lib;wsock32.lib;%(AdditionalDependencies)```
-* Linker -> System -> SubSystem -> Windows (/SUBSYSTEM:WINDOWS)
-Build with the Release config selected
+Open the Visual Studio Solution (BitPresent.sln) in "visual studio files" and build with the Release x86 Configuration
